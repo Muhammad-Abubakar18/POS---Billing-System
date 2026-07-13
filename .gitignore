@@ -1,0 +1,22 @@
+# Build & runtime
+bin/
+obj/
+*.user
+
+# Database (keep folder, ignore DB file in git)
+database/*.db
+database/*.db-shm
+database/*.db-wal
+
+# Logs
+logs/
+
+# VS Code
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
