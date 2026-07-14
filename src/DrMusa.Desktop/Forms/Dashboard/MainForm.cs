@@ -196,6 +196,8 @@ public partial class MainForm : Form
         btnProducts.Click += (s, e) => OpenProductsModule();
 
         var btnBilling = CreateSidebarButton("🛒  Billing");
+        btnBilling.Click += (s, e) => OpenBillingModule();
+        
         var btnCustomers = CreateSidebarButton("👥  Customers");
         var btnReports = CreateSidebarButton("📈  Reports");
 
@@ -257,6 +259,23 @@ public partial class MainForm : Form
         var dashCtrl = new DashboardControl(_saleService);
         LoadContent(dashCtrl);
         await dashCtrl.LoadDataAsync();
+    }
+
+    private void OpenBillingModule()
+    {
+        try
+        {
+            var billingForm = new Forms.Billing.BillingForm(_serviceProvider)
+            {
+                TopLevel = false,
+                FormBorderStyle = FormBorderStyle.None
+            };
+            LoadContent(billingForm);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to open Billing module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void OpenProductsModule()
