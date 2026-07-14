@@ -291,8 +291,7 @@ public partial class DashboardControl : UserControl
         _gridLowStock.DataSource = data.LowStockProducts.Select(p => new
         {
             p.Name,
-            Stock = p.CurrentStock,
-            Min = p.MinimumStock
+            Category = p.CategoryName ?? "—"
         }).ToList();
 
         _gridTopSelling.DataSource = data.TopSellingProducts.Select(p => new

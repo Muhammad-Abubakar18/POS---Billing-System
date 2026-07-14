@@ -1,10 +1,11 @@
 # DrMusa
-# Offline POS Billing & Inventory Management System
+# Fast Food POS Billing System
+## Offline POS Billing & Inventory Management System
 
-**Version:** 1.0  
-**Platform:** Windows Desktop (Offline)  
-**Framework:** .NET 8  
-**IDE:** VS Code  
+**Version:** 1.1
+**Platform:** Windows Desktop (Offline)
+**Framework:** .NET 8
+**IDE:** VS Code
 **Database:** SQLite
 
 ---
@@ -17,7 +18,7 @@
 
 ## Description
 
-DrMusa is a professional offline Point of Sale (POS) and Billing System for Windows Desktop. It enables businesses to manage products, inventory, sales, purchases, customers, suppliers, reports, and receipt printing without requiring an internet connection.
+DrMusa is a professional offline Point of Sale (POS) and Billing System for Windows Desktop, purpose-built for **Fast Food** businesses. It enables businesses to manage products, inventory, sales, and receipt printing without requiring an internet connection. The system is focused on fast, image-driven order taking at the counter — no customer, supplier, or purchase tracking is required.
 
 ---
 
@@ -71,9 +72,6 @@ DrMusa/
 │   │   ├── Billing/
 │   │   ├── Products/
 │   │   ├── Categories/
-│   │   ├── Customers/
-│   │   ├── Suppliers/
-│   │   ├── Purchases/
 │   │   ├── Inventory/
 │   │   ├── Reports/
 │   │   ├── Settings/
@@ -172,8 +170,6 @@ DrMusa/
 - Today's Sales
 - Monthly Sales
 - Total Products
-- Total Customers
-- Total Suppliers
 - Recent Transactions
 - Low Stock Alert
 - Top Selling Products
@@ -210,63 +206,41 @@ DrMusa/
 
 ---
 
-## Module 5 — Customer Management
+## Module 5 — Billing (POS)
+
+The core of DrMusa — a fast, touch/click-friendly ordering screen for cashiers.
 
 ### Features
 
-- Add Customer
-- Update Customer
-- Delete Customer
-- Customer Purchase History
-- Search Customer
-
----
-
-## Module 6 — Supplier Management
-
-### Features
-
-- Add Supplier
-- Update Supplier
-- Delete Supplier
-- Search Supplier
-- Supplier Purchase History
-
----
-
-## Module 7 — Purchase Management
-
-### Features
-
-- Create Purchase
-- Purchase Invoice
-- Purchase History
-- Purchase Return
-- Update Stock Automatically
-
----
-
-## Module 8 — Billing (POS)
-
-### Features
-
+- **Image-Based Ordering** — Products are displayed as image tiles grouped by category; cashier clicks a product image to add it to the cart
 - Barcode Search
-- Product Search
-- Shopping Cart
-- Quantity Update
-- Discount
+- Product Search (by name, as a fallback to image tap)
+- Shopping Cart (live running list of items, quantities, and line totals)
+- Quantity Update (increment/decrement or edit quantity per cart line)
+- Remove Item from Cart
+- Discount (per item / per bill)
 - Tax
 - Cash Payment
 - Card Payment
 - Split Payment (Future)
 - Hold Bill
 - Resume Bill
+- **Complete Order & Print** — clicking Print finalizes the order, saves it to the database as a completed Sale, and sends the receipt to the printer
 - Print Receipt
 - Save Invoice
 
+### Order Flow
+
+1. Cashier taps product images as the customer orders; each tap adds the item to the cart
+2. Cashier adjusts quantities, applies discount/tax if needed
+3. Cashier selects payment method (Cash / Card)
+4. Cashier clicks **Print**
+5. System saves the order (Sale + SaleItems) to the database
+6. System sends the receipt to the printer
+
 ---
 
-## Module 9 — Sales Management
+## Module 6 — Sales Management
 
 ### Features
 
@@ -278,7 +252,7 @@ DrMusa/
 
 ---
 
-## Module 10 — Inventory Management
+## Module 7 — Inventory Management
 
 ### Features
 
@@ -291,7 +265,7 @@ DrMusa/
 
 ---
 
-## Module 11 — Reports
+## Module 8 — Reports
 
 ### Reports
 
@@ -299,10 +273,7 @@ DrMusa/
 - Weekly Sales Report
 - Monthly Sales Report
 - Yearly Sales Report
-- Purchase Report
 - Profit Report
-- Customer Report
-- Supplier Report
 - Inventory Report
 - Low Stock Report
 
@@ -313,7 +284,7 @@ Export
 
 ---
 
-## Module 12 — Receipt Printing
+## Module 9 — Receipt Printing
 
 ### Features
 
@@ -327,7 +298,7 @@ Export
 
 ---
 
-## Module 13 — User Management
+## Module 10 — User Management
 
 ### Features
 
@@ -339,7 +310,7 @@ Export
 
 ---
 
-## Module 14 — Settings
+## Module 11 — Settings
 
 ### Features
 
@@ -354,7 +325,7 @@ Export
 
 ---
 
-## Module 15 — Backup & Restore
+## Module 12 — Backup & Restore
 
 ### Features
 
@@ -370,10 +341,6 @@ Export
 - Users
 - Products
 - Categories
-- Customers
-- Suppliers
-- Purchases
-- PurchaseItems
 - Sales
 - SaleItems
 - Inventory
@@ -391,9 +358,7 @@ Export
 - Dashboard
 - Product Management
 - Category Management
-- Customer Management
-- Supplier Management
-- Billing
+- Billing (image-based ordering)
 - Receipt Printing
 - Inventory
 - Reports
@@ -402,9 +367,7 @@ Export
 
 ## Phase 2
 
-- Purchase Management
 - Sales Returns
-- Purchase Returns
 - User Management
 - Backup & Restore
 
@@ -458,11 +421,9 @@ Microsoft.Extensions.DependencyInjection
 6. Dashboard
 7. Product Module
 8. Category Module
-9. Customer Module
-10. Supplier Module
-11. Purchase Module
-12. Billing Module
-13. Receipt Printing
-14. Reports
-15. Backup & Restore
-16. Settings
+9. Billing Module (image-based ordering)
+10. Receipt Printing
+11. Inventory
+12. Reports
+13. Backup & Restore
+14. Settings

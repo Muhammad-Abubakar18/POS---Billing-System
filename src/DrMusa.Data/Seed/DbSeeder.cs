@@ -27,13 +27,17 @@ public static class DbSeeder
             });
         }
 
-        // Seed default categories
+        // Seed default fast food categories
         if (!await context.Categories.AnyAsync())
         {
             context.Categories.AddRange(
-                new Category { Name = "General", Description = "General products" },
-                new Category { Name = "Medicine", Description = "Pharmaceutical products" },
-                new Category { Name = "Electronics", Description = "Electronic devices" }
+                new Category { Name = "Burgers", Description = "Beef, chicken, and specialty burgers" },
+                new Category { Name = "Pizzas", Description = "Classic and specialty pizzas" },
+                new Category { Name = "Chinese", Description = "Chinese cuisine and rice dishes" },
+                new Category { Name = "Shawarma", Description = "Shawarma wraps and platters" },
+                new Category { Name = "Drinks", Description = "Beverages, juices, and soft drinks" },
+                new Category { Name = "Desserts", Description = "Sweet treats and ice cream" },
+                new Category { Name = "Sides", Description = "Fries, nuggets, and appetizers" }
             );
         }
 

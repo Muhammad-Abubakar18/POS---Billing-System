@@ -2,6 +2,7 @@ using DrMusa.Business.Interfaces;
 using DrMusa.Desktop.Helpers;
 using DrMusa.Desktop.Forms.Login;
 using DrMusa.Desktop.Forms.Products;
+using DrMusa.Desktop.Forms.Categories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DrMusa.Desktop.Forms.Dashboard;
@@ -188,13 +189,18 @@ public partial class MainForm : Form
         var btnDashboard = CreateSidebarButton("📊  Dashboard");
         btnDashboard.Click += (s, e) => LoadDashboard();
 
+        var btnCategories = CreateSidebarButton("🏷️  Categories");
+        btnCategories.Click += (s, e) => OpenCategoriesModule();
+
         var btnProducts = CreateSidebarButton("📦  Products");
         btnProducts.Click += (s, e) => OpenProductsModule();
+
         var btnBilling = CreateSidebarButton("🛒  Billing");
         var btnCustomers = CreateSidebarButton("👥  Customers");
         var btnReports = CreateSidebarButton("📈  Reports");
 
-        _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnProducts, btnBilling, btnDashboard });
+        // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
+        _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnProducts, btnCategories, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)
@@ -267,6 +273,23 @@ public partial class MainForm : Form
         catch (Exception ex)
         {
             MessageBox.Show($"Failed to open Products module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void OpenCategoriesModule()
+    {
+        try
+        {
+            var categoryForm = new CategoryListForm(_serviceProvider)
+            {
+                TopLevel = false,
+                FormBorderStyle = FormBorderStyle.None
+            };
+            LoadContent(categoryForm);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to open Categories module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

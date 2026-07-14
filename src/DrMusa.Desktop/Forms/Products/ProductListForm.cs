@@ -152,8 +152,6 @@ public sealed class ProductListForm : Form
                 Category = p.CategoryName,
                 PurchasePrice = UIHelper.FormatCurrency(p.PurchasePrice),
                 SellingPrice = UIHelper.FormatCurrency(p.SellingPrice),
-                p.CurrentStock,
-                p.MinimumStock,
                 Status = p.IsActive ? "Active" : "Inactive"
             }).ToList();
 

@@ -10,7 +10,6 @@ public static class ProductMapper
         p.Id, p.Name, p.Barcode, p.Description,
         p.CategoryId, p.Category?.Name,
         p.PurchasePrice, p.SellingPrice,
-        p.CurrentStock, p.MinimumStock,
         p.ImagePath, p.IsActive
     );
 
@@ -22,8 +21,8 @@ public static class ProductMapper
         CategoryId = dto.CategoryId,
         PurchasePrice = dto.PurchasePrice,
         SellingPrice = dto.SellingPrice,
-        CurrentStock = dto.CurrentStock,
-        MinimumStock = dto.MinimumStock,
+        CurrentStock = 0,
+        MinimumStock = 5,
         ImagePath = dto.ImagePath,
         IsActive = true,
         CreatedAt = DateTime.Now
@@ -37,8 +36,6 @@ public static class ProductMapper
         entity.CategoryId = dto.CategoryId;
         entity.PurchasePrice = dto.PurchasePrice;
         entity.SellingPrice = dto.SellingPrice;
-        entity.CurrentStock = dto.CurrentStock;
-        entity.MinimumStock = dto.MinimumStock;
         entity.ImagePath = dto.ImagePath;
         entity.UpdatedAt = DateTime.Now;
     }

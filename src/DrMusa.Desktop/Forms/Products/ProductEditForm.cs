@@ -21,8 +21,6 @@ public sealed class ProductEditForm : Form
     private ComboBox _cmbCategory = null!;
     private TextBox _txtPurchasePrice = null!;
     private TextBox _txtSellingPrice = null!;
-    private TextBox _txtCurrentStock = null!;
-    private TextBox _txtMinimumStock = null!;
     private TextBox _txtImagePath = null!;
     private Button _btnBrowseImage = null!;
     private Button _btnSave = null!;
@@ -67,7 +65,7 @@ public sealed class ProductEditForm : Form
 
         var subtitle = new Label
         {
-            Text = "Barcode, pricing, stock, and category details for the inventory catalog.",
+            Text = "Barcode, pricing, and category details for the product catalog.",
             Font = AppTheme.FontSmall,
             ForeColor = AppTheme.TextSecondary,
             AutoSize = true,
@@ -101,12 +99,6 @@ public sealed class ProductEditForm : Form
 
         _txtSellingPrice = new TextBox();
         var pnlSelling = AppTheme.WrapInputPanel(_txtSellingPrice, "Selling price");
-
-        _txtCurrentStock = new TextBox();
-        var pnlCurrentStock = AppTheme.WrapInputPanel(_txtCurrentStock, "Current stock");
-
-        _txtMinimumStock = new TextBox();
-        var pnlMinimumStock = AppTheme.WrapInputPanel(_txtMinimumStock, "Minimum stock");
 
         _txtImagePath = new TextBox();
         var pnlImagePath = AppTheme.WrapInputPanel(_txtImagePath, "Image path (optional)");
@@ -147,10 +139,7 @@ public sealed class ProductEditForm : Form
         fields.Controls.Add(CreateFieldGroup("Purchase Price", pnlPurchase), 1, 2);
 
         fields.Controls.Add(CreateFieldGroup("Selling Price", pnlSelling), 0, 3);
-        fields.Controls.Add(CreateFieldGroup("Current Stock", pnlCurrentStock), 1, 3);
-
-        fields.Controls.Add(CreateFieldGroup("Minimum Stock", pnlMinimumStock), 0, 4);
-        fields.Controls.Add(CreateFieldGroup("Image Path", CreateImagePathPanel(pnlImagePath)), 1, 4);
+        fields.Controls.Add(CreateFieldGroup("Image Path", CreateImagePathPanel(pnlImagePath)), 1, 3);
 
         var footer = new FlowLayoutPanel
         {
@@ -229,8 +218,6 @@ public sealed class ProductEditForm : Form
                     _cmbCategory.SelectedValue = product.CategoryId;
                     _txtPurchasePrice.Text = product.PurchasePrice.ToString("0.##");
                     _txtSellingPrice.Text = product.SellingPrice.ToString("0.##");
-                    _txtCurrentStock.Text = product.CurrentStock.ToString();
-                    _txtMinimumStock.Text = product.MinimumStock.ToString();
                     _txtImagePath.Text = product.ImagePath ?? string.Empty;
                 }
             }
@@ -271,11 +258,9 @@ public sealed class ProductEditForm : Form
         }
 
         if (!decimal.TryParse(_txtPurchasePrice.Text, out var purchasePrice) ||
-            !decimal.TryParse(_txtSellingPrice.Text, out var sellingPrice) ||
-            !int.TryParse(_txtCurrentStock.Text, out var currentStock) ||
-            !int.TryParse(_txtMinimumStock.Text, out var minimumStock))
+            !decimal.TryParse(_txtSellingPrice.Text, out var sellingPrice))
         {
-            UIHelper.ShowWarning("Please enter valid numeric values for prices and stock.");
+            UIHelper.ShowWarning("Please enter valid numeric values for prices.");
             return;
         }
 
@@ -293,8 +278,6 @@ public sealed class ProductEditForm : Form
             categoryId,
             purchasePrice,
             sellingPrice,
-            currentStock,
-            minimumStock,
             GetValueOrNull(_txtImagePath, "Image path (optional)")
         );
 

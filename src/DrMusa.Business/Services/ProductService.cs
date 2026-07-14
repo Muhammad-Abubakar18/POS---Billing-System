@@ -38,11 +38,6 @@ public class ProductService : IProductService
         return results.Select(ToDto);
     }
 
-    public async Task<IEnumerable<ProductDto>> GetLowStockAsync()
-    {
-        var results = await _productRepo.GetLowStockProductsAsync();
-        return results.Select(ToDto);
-    }
 
     public async Task<ProductDto> CreateAsync(CreateProductDto dto)
     {
@@ -54,8 +49,8 @@ public class ProductService : IProductService
             CategoryId = dto.CategoryId,
             PurchasePrice = dto.PurchasePrice,
             SellingPrice = dto.SellingPrice,
-            CurrentStock = dto.CurrentStock,
-            MinimumStock = dto.MinimumStock,
+            CurrentStock = 0,
+            MinimumStock = 5,
             ImagePath = dto.ImagePath,
             IsActive = true,
             CreatedAt = DateTime.Now
@@ -75,8 +70,6 @@ public class ProductService : IProductService
         product.CategoryId = dto.CategoryId;
         product.PurchasePrice = dto.PurchasePrice;
         product.SellingPrice = dto.SellingPrice;
-        product.CurrentStock = dto.CurrentStock;
-        product.MinimumStock = dto.MinimumStock;
         product.ImagePath = dto.ImagePath;
         product.UpdatedAt = DateTime.Now;
 
@@ -95,7 +88,6 @@ public class ProductService : IProductService
         p.Id, p.Name, p.Barcode, p.Description,
         p.CategoryId, p.Category?.Name,
         p.PurchasePrice, p.SellingPrice,
-        p.CurrentStock, p.MinimumStock,
         p.ImagePath, p.IsActive
     );
 }

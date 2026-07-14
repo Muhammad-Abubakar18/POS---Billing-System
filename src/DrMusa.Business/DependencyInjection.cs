@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISaleRepository, SaleRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         // Business Services
         services.AddScoped<IAuthService, AuthService>();
@@ -31,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ISaleService, SaleService>();
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<ISettingService, SettingService>();
+        services.AddScoped<ICategoryService, CategoryService>();
 
         return services;
     }

@@ -25,11 +25,5 @@ public class CreateProductValidator : AbstractValidator<CreateProductDto>
             .GreaterThan(0).WithMessage("Selling price must be greater than 0.")
             .GreaterThanOrEqualTo(x => x.PurchasePrice)
                 .WithMessage("Selling price must be >= purchase price.");
-
-        RuleFor(x => x.CurrentStock)
-            .GreaterThanOrEqualTo(0).WithMessage("Stock cannot be negative.");
-
-        RuleFor(x => x.MinimumStock)
-            .GreaterThanOrEqualTo(0).WithMessage("Minimum stock cannot be negative.");
     }
 }
