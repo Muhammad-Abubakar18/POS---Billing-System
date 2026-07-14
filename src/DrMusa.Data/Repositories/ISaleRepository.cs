@@ -9,6 +9,6 @@ public interface ISaleRepository : IRepository<Sale>
     Task<IEnumerable<Sale>> GetByCustomerAsync(int customerId);
     Task<Sale?> GetByInvoiceNumberAsync(string invoiceNumber);
     Task<decimal> GetTotalSalesAsync(DateTime from, DateTime to);
-    Task<IEnumerable<dynamic>> GetTopSellingProductsAsync(int count);
-    Task<IEnumerable<dynamic>> GetSalesGraphDataAsync(DateTime from, DateTime to);
+    Task<IEnumerable<(int ProductId, string ProductName, int TotalQuantitySold, decimal TotalRevenue)>> GetTopSellingProductsAsync(int count);
+    Task<IEnumerable<(DateTime Date, decimal Amount)>> GetSalesGraphDataAsync(DateTime from, DateTime to);
 }

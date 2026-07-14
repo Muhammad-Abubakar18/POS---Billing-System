@@ -4,6 +4,7 @@ using DrMusa.Desktop.Forms.Login;
 using DrMusa.Desktop.Forms.Products;
 using DrMusa.Desktop.Forms.Categories;
 using DrMusa.Desktop.Forms.Reports;
+using DrMusa.Desktop.Forms.Inventory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DrMusa.Desktop.Forms.Dashboard;
@@ -196,6 +197,9 @@ public partial class MainForm : Form
         var btnProducts = CreateSidebarButton("📦  Products");
         btnProducts.Click += (s, e) => OpenProductsModule();
 
+        var btnInventory = CreateSidebarButton("📦  Inventory");
+        btnInventory.Click += (s, e) => OpenInventoryModule();
+
         var btnBilling = CreateSidebarButton("🛒  Billing");
         btnBilling.Click += (s, e) => OpenBillingModule();
         
@@ -204,7 +208,7 @@ public partial class MainForm : Form
         btnReports.Click += (s, e) => OpenReportsModule();
 
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
-        _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnProducts, btnCategories, btnBilling, btnDashboard });
+        _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)
@@ -311,6 +315,23 @@ public partial class MainForm : Form
         catch (Exception ex)
         {
             MessageBox.Show($"Failed to open Products module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private void OpenInventoryModule()
+    {
+        try
+        {
+            var inventoryForm = new InventoryForm(_serviceProvider)
+            {
+                TopLevel = false,
+                FormBorderStyle = FormBorderStyle.None
+            };
+            LoadContent(inventoryForm);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to open Inventory module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

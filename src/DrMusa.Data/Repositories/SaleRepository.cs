@@ -42,7 +42,7 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
         return amounts.Sum();
     }
 
-    public async Task<IEnumerable<dynamic>> GetTopSellingProductsAsync(int count)
+    public async Task<IEnumerable<(int ProductId, string ProductName, int TotalQuantitySold, decimal TotalRevenue)>> GetTopSellingProductsAsync(int count)
     {
         var saleItems = await _context.Set<SaleItem>()
             .Include(si => si.Product)
@@ -50,13 +50,12 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
 
         var topSelling = saleItems
             .GroupBy(si => new { si.ProductId, Name = si.Product!.Name })
-            .Select(g => new
-            {
-                ProductId = g.Key.ProductId,
-                ProductName = g.Key.Name,
-                TotalQuantitySold = g.Sum(si => si.Quantity),
-                TotalRevenue = g.Sum(si => si.TotalPrice)
-            })
+            .Select(g => (
+                ProductId: g.Key.ProductId,
+                ProductName: g.Key.Name,
+                TotalQuantitySold: g.Sum(si => si.Quantity),
+                TotalRevenue: g.Sum(si => si.TotalPrice)
+            ))
             .OrderByDescending(x => x.TotalQuantitySold)
             .Take(count)
             .ToList();
@@ -64,7 +63,7 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
         return topSelling;
     }
 
-    public async Task<IEnumerable<dynamic>> GetSalesGraphDataAsync(DateTime from, DateTime to)
+    public async Task<IEnumerable<(DateTime Date, decimal Amount)>> GetSalesGraphDataAsync(DateTime from, DateTime to)
     {
         var sales = await _dbSet
             .Where(s => s.SaleDate >= from && s.SaleDate <= to && s.Status == Common.Enums.SaleStatus.Completed)
@@ -73,11 +72,10 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
 
         var grouped = sales
             .GroupBy(s => s.SaleDate.Date)
-            .Select(g => new
-            {
-                Date = g.Key,
-                Amount = g.Sum(s => s.TotalAmount)
-            })
+            .Select(g => (
+                Date: g.Key,
+                Amount: g.Sum(s => s.TotalAmount)
+            ))
             .OrderBy(g => g.Date)
             .ToList();
 

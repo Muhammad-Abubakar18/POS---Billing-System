@@ -6,7 +6,7 @@ public static class InvoiceNumberGenerator
 
     public static string Generate(string prefix = "INV")
     {
-        var date = DateTime.Now.ToString("yyyyMMdd");
+        var date = DateTime.Now.ToString("yyyyMMddHHmmss");
         return $"{prefix}-{date}-{_counter++:D4}";
     }
 }

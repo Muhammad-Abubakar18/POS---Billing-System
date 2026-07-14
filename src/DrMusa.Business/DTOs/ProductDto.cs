@@ -9,6 +9,8 @@ public record ProductDto(
     string? CategoryName,
     decimal PurchasePrice,
     decimal SellingPrice,
+    int CurrentStock,
+    int MinimumStock,
     string? ImagePath,
     bool IsActive
 );

@@ -10,5 +10,6 @@ public interface IProductService
     Task<IEnumerable<ProductDto>> SearchAsync(string searchTerm);
     Task<ProductDto> CreateAsync(CreateProductDto dto);
     Task UpdateAsync(int id, CreateProductDto dto);
+    Task UpdateMinimumStockAsync(int id, int minStock);
     Task DeleteAsync(int id);
 }

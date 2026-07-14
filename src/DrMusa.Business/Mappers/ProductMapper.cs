@@ -10,6 +10,7 @@ public static class ProductMapper
         p.Id, p.Name, p.Barcode, p.Description,
         p.CategoryId, p.Category?.Name,
         p.PurchasePrice, p.SellingPrice,
+        p.CurrentStock, p.MinimumStock,
         p.ImagePath, p.IsActive
     );
 

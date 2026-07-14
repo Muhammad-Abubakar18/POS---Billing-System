@@ -506,7 +506,9 @@ public partial class BillingForm : Form
         }
         catch (Exception ex)
         {
-            UIHelper.ShowError($"Failed to complete order: {ex.Message}");
+            _btnComplete.Enabled = true;
+            string msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            UIHelper.ShowError($"Failed to complete order:\n{msg}");
         }
         finally
         {

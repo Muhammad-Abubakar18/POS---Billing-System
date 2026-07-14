@@ -153,16 +153,16 @@ public class SaleService : ISaleService
 
         var topSellingRaw = await _saleRepo.GetTopSellingProductsAsync(5);
         var topSelling = topSellingRaw.Select(t => new TopSellingProductDto(
-            (int)t.ProductId,
-            (string)t.ProductName,
-            (int)t.TotalQuantitySold,
-            (decimal)t.TotalRevenue
+            t.ProductId,
+            t.ProductName,
+            t.TotalQuantitySold,
+            t.TotalRevenue
         )).ToList();
 
         var graphDataRaw = await _saleRepo.GetSalesGraphDataAsync(today.AddDays(-6), today.AddDays(1));
         var graphData = graphDataRaw.Select(g => new SalesGraphDataDto(
-            (DateTime)g.Date,
-            (decimal)g.Amount
+            g.Date,
+            g.Amount
         )).ToList();
 
         return new DashboardDto(
@@ -174,6 +174,7 @@ public class SaleService : ISaleService
                 p.Id, p.Name, p.Barcode, p.Description,
                 p.CategoryId, p.Category?.Name,
                 p.PurchasePrice, p.SellingPrice,
+                p.CurrentStock, p.MinimumStock,
                 p.ImagePath, p.IsActive)).ToList(),
             topSelling,
             graphData

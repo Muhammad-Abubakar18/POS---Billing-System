@@ -76,6 +76,17 @@ public class ProductService : IProductService
         await _productRepo.UpdateAsync(product);
     }
 
+    public async Task UpdateMinimumStockAsync(int id, int minStock)
+    {
+        var product = await _productRepo.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Product {id} not found.");
+
+        product.MinimumStock = minStock;
+        product.UpdatedAt = DateTime.Now;
+
+        await _productRepo.UpdateAsync(product);
+    }
+
     public async Task DeleteAsync(int id)
     {
         var product = await _productRepo.GetByIdAsync(id)
@@ -88,6 +99,7 @@ public class ProductService : IProductService
         p.Id, p.Name, p.Barcode, p.Description,
         p.CategoryId, p.Category?.Name,
         p.PurchasePrice, p.SellingPrice,
+        p.CurrentStock, p.MinimumStock,
         p.ImagePath, p.IsActive
     );
 }
