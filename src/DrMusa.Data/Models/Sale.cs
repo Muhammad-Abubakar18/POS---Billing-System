@@ -22,6 +22,7 @@ public class Sale
     public SaleStatus Status { get; set; } = SaleStatus.Completed;
     public string? Notes { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public bool HasReceipt { get; set; } = false;
 
     // Navigation
     public Customer? Customer { get; set; }

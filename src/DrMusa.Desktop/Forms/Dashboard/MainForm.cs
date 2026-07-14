@@ -223,8 +223,12 @@ public partial class MainForm : Form
         btnUsers.Click += (s, e) => OpenUsersModule();
         btnUsers.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
 
+        var btnSettings = CreateSidebarButton("⚙️  Settings");
+        btnSettings.Click += (s, e) => OpenSettingsModule();
+        btnSettings.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
+
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
-        _sideBar.Controls.AddRange(new Control[] { btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
+        _sideBar.Controls.AddRange(new Control[] { btnSettings, btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)
@@ -284,6 +288,16 @@ public partial class MainForm : Form
             FormBorderStyle = FormBorderStyle.None
         };
         LoadContent(usersForm);
+    }
+
+    private void OpenSettingsModule()
+    {
+        var settingsForm = new DrMusa.Desktop.Forms.Settings.SettingsForm(_serviceProvider)
+        {
+            TopLevel = false,
+            FormBorderStyle = FormBorderStyle.None
+        };
+        LoadContent(settingsForm);
     }
 
     private async void LoadDashboard()

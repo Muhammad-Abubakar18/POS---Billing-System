@@ -27,7 +27,8 @@ public record CreateSaleDto(
     decimal PaidAmount,
     PaymentMethod PaymentMethod,
     OrderType OrderType,
-    string? Notes
+    string? Notes,
+    bool HasReceipt
 );
 
 public record SaleDto(
@@ -45,6 +46,7 @@ public record SaleDto(
     PaymentMethod PaymentMethod,
     OrderType OrderType,
     SaleStatus Status,
+    bool HasReceipt,
     IList<SaleItemDto> Items
 );
 

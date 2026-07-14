@@ -477,6 +477,17 @@ public partial class BillingForm : Form
         decimal.TryParse(_txtTax.Text, out decimal taxPct);
         decimal.TryParse(_txtPaidAmount.Text, out decimal paid);
 
+        bool printReceipt = true;
+        var dr1 = MessageBox.Show("Do you want to print a receipt?", "Print Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        if (dr1 == DialogResult.No)
+        {
+            var dr2 = MessageBox.Show("Are you double sure you don't want a receipt?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dr2 == DialogResult.Yes) // Yes, I am sure I don't want a receipt
+            {
+                printReceipt = false;
+            }
+        }
+
         var dto = new CreateSaleDto(
             CustomerId: null,
             UserId: SessionManager.CurrentUserId ?? 1,
@@ -486,14 +497,34 @@ public partial class BillingForm : Form
             PaidAmount: paid,
             PaymentMethod: _selectedPayment,
             OrderType: _selectedOrderType,
-            Notes: ""
+            Notes: "",
+            HasReceipt: printReceipt
         );
 
         try
         {
             _btnComplete.Enabled = false;
             var sale = await _saleService.CreateSaleAsync(dto);
-            UIHelper.ShowSuccess($"Order Complete!\nInvoice: {sale.InvoiceNumber}\nOrder Type: {_selectedOrderType}");
+            
+            if (printReceipt)
+            {
+                var settings = _serviceProvider.GetRequiredService<DrMusa.Data.Context.DrMusaDbContext>().Settings.ToDictionary(s => s.Key, s => s.Value);
+                var printer = new DrMusa.Desktop.Helpers.ReceiptPrinter(
+                    sale,
+                    settings.GetValueOrDefault("BusinessName", "DrMusa Store"),
+                    settings.GetValueOrDefault("BusinessPhone", ""),
+                    settings.GetValueOrDefault("BusinessAddress", ""),
+                    settings.GetValueOrDefault("ReceiptHeader", "Thank you for shopping!"),
+                    settings.GetValueOrDefault("ReceiptFooter", "Please come again"),
+                    settings.GetValueOrDefault("Currency", "PKR"),
+                    settings.GetValueOrDefault("BusinessLogo", "")
+                );
+                printer.Print(preview: true);
+            }
+            else
+            {
+                UIHelper.ShowSuccess($"Order Complete! (No Receipt)\nInvoice: {sale.InvoiceNumber}\nOrder Type: {_selectedOrderType}");
+            }
             
             // Clear cart
             _cart.Clear();
