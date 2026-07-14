@@ -44,7 +44,7 @@ public sealed class CategoryListForm : Form
         var header = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 74,
+            Height = 90,
             BackColor = AppTheme.BackgroundPanel,
             Padding = new Padding(20, 14, 20, 14)
         };
@@ -64,51 +64,46 @@ public sealed class CategoryListForm : Form
             Font = AppTheme.FontSmall,
             ForeColor = AppTheme.TextSecondary,
             AutoSize = true,
-            Location = new Point(20, 40)
+            Location = new Point(20, 50)
         };
 
         // Search box
         _txtSearch = new TextBox { Width = 260 };
         var searchPanel = AppTheme.WrapInputPanel(_txtSearch, "Search categories...");
         searchPanel.Width = 260;
-        searchPanel.Location = new Point(350, 16);
 
         // Toolbar buttons
         _btnRefresh = new Button { Text = "Refresh", Width = 90 };
         AppTheme.StyleSecondaryButton(_btnRefresh);
-        _btnRefresh.Location = new Point(625, 16);
         _btnRefresh.Click += async (_, __) => await LoadCategoriesAsync();
 
         _btnAdd = new Button { Text = "+ Add Category", Width = 130 };
         AppTheme.StylePrimaryButton(_btnAdd);
-        _btnAdd.Location = new Point(723, 16);
         _btnAdd.Click += async (_, __) => await OpenEditorAsync();
 
         _btnEdit = new Button { Text = "Edit", Width = 80 };
         AppTheme.StyleSecondaryButton(_btnEdit);
-        _btnEdit.Location = new Point(100, 16);   // positioned relative to right cluster in Anchor
         _btnEdit.Click += async (_, __) => await EditSelectedAsync();
 
         _btnDelete = new Button { Text = "Delete", Width = 80 };
         AppTheme.StyleDangerButton(_btnDelete);
         _btnDelete.Click += async (_, __) => await DeleteSelectedAsync();
 
-        // Lay out edit/delete using a right-aligned flow panel inside header
         var rightTools = new FlowLayoutPanel
         {
-            FlowDirection = FlowDirection.RightToLeft,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
             AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Dock = DockStyle.Right,
             BackColor = Color.Transparent,
-            Location = new Point(730, 38),
-            Height = 44
+            Padding = new Padding(0, 2, 0, 0)
         };
-        rightTools.Controls.Add(_btnDelete);
-        rightTools.Controls.Add(_btnEdit);
+        rightTools.Controls.AddRange(new Control[] { searchPanel, _btnRefresh, _btnAdd, _btnEdit, _btnDelete });
 
         header.Controls.AddRange(new Control[]
         {
-            lblTitle, lblSubtitle, searchPanel, _btnRefresh, _btnAdd, rightTools
+            lblTitle, lblSubtitle, rightTools
         });
 
         // ── Status bar ─────────────────────────────────────────────

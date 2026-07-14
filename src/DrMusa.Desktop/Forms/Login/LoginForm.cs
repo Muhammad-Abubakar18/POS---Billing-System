@@ -57,15 +57,41 @@ public sealed class LoginForm : Form
         Size            = new Size(900, 560);
         MinimumSize     = new Size(900, 560);
         StartPosition   = FormStartPosition.CenterScreen;
-        FormBorderStyle = FormBorderStyle.FixedSingle;
-        MaximizeBox     = false;
+        FormBorderStyle = FormBorderStyle.Sizable;
+        MaximizeBox     = true;
         BackColor       = AppTheme.BackgroundDark;
         Icon            = SystemIcons.Shield;
 
         BuildLeftPanel();
         BuildRightPanel();
 
-        Controls.AddRange(new Control[] { _leftPanel, _rightPanel });
+        var centerContainer = new Panel
+        {
+            Size = new Size(900, 560),
+            Margin = new Padding(0),
+            BackColor = Color.Transparent
+        };
+        centerContainer.Controls.AddRange(new Control[] { _leftPanel, _rightPanel });
+
+        var rootGrid = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 3,
+            RowCount = 3,
+            BackColor = Color.Transparent
+        };
+        
+        rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        
+        rootGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+        rootGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        rootGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+
+        rootGrid.Controls.Add(centerContainer, 1, 1);
+        
+        Controls.Add(rootGrid);
         _rightPanel.BringToFront();
     }
 

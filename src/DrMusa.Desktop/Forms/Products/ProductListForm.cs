@@ -38,7 +38,7 @@ public sealed class ProductListForm : Form
         var header = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 74,
+            Height = 90,
             BackColor = AppTheme.BackgroundPanel,
             Padding = new Padding(20, 14, 20, 14)
         };
@@ -58,35 +58,42 @@ public sealed class ProductListForm : Form
             Font = AppTheme.FontSmall,
             ForeColor = AppTheme.TextSecondary,
             AutoSize = true,
-            Location = new Point(20, 40)
+            Location = new Point(20, 50)
         };
 
         _txtSearch = new TextBox { Width = 280 };
         var searchPanel = AppTheme.WrapInputPanel(_txtSearch, "Search by name or barcode");
         searchPanel.Width = 280;
-        searchPanel.Location = new Point(480, 16);
 
         _btnRefresh = new Button { Text = "Refresh", Width = 100 };
         AppTheme.StyleSecondaryButton(_btnRefresh);
-        _btnRefresh.Location = new Point(780, 16);
         _btnRefresh.Click += async (_, __) => await LoadProductsAsync();
 
         _btnAdd = new Button { Text = "Add Product", Width = 120 };
         AppTheme.StylePrimaryButton(_btnAdd);
-        _btnAdd.Location = new Point(890, 16);
         _btnAdd.Click += async (_, __) => await OpenEditorAsync();
 
         _btnEdit = new Button { Text = "Edit", Width = 90 };
         AppTheme.StyleSecondaryButton(_btnEdit);
-        _btnEdit.Location = new Point(1020, 16);
         _btnEdit.Click += async (_, __) => await EditSelectedAsync();
 
         _btnDelete = new Button { Text = "Delete", Width = 90 };
         AppTheme.StyleDangerButton(_btnDelete);
-        _btnDelete.Location = new Point(1118, 16);
         _btnDelete.Click += async (_, __) => await DeleteSelectedAsync();
 
-        header.Controls.AddRange(new Control[] { lblTitle, lblSubtitle, searchPanel, _btnRefresh, _btnAdd, _btnEdit, _btnDelete });
+        var rightTools = new FlowLayoutPanel
+        {
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Dock = DockStyle.Right,
+            BackColor = Color.Transparent,
+            Padding = new Padding(0, 2, 0, 0)
+        };
+        rightTools.Controls.AddRange(new Control[] { searchPanel, _btnRefresh, _btnAdd, _btnEdit, _btnDelete });
+
+        header.Controls.AddRange(new Control[] { lblTitle, lblSubtitle, rightTools });
 
         _gridProducts = new DataGridView
         {

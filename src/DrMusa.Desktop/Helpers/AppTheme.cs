@@ -10,69 +10,71 @@ namespace DrMusa.Desktop.Helpers;
 /// </summary>
 public static class AppTheme
 {
-    // ── Color Palette ─────────────────────────────────────────────────────────
+    // ── Color Palette (Fluent 2 Light) ────────────────────────────────────────
 
-    /// <summary>Main window background — near-black navy.</summary>
-    public static readonly Color BackgroundDark   = ColorFromHex("#0F1117");
+    /// <summary>Main window background — neutral.background</summary>
+    public static readonly Color BackgroundDark   = ColorFromHex("#F5F7FA");
 
-    /// <summary>Panel/sidebar background.</summary>
-    public static readonly Color BackgroundPanel  = ColorFromHex("#1A1D2E");
+    /// <summary>Panel/sidebar background — neutral.surface</summary>
+    public static readonly Color BackgroundPanel  = ColorFromHex("#FFFFFF");
 
-    /// <summary>Card/widget background.</summary>
-    public static readonly Color BackgroundCard   = ColorFromHex("#222538");
+    /// <summary>Card/widget background — neutral.surfaceAlt</summary>
+    public static readonly Color BackgroundCard   = ColorFromHex("#FAFBFC");
 
-    /// <summary>Input field background.</summary>
-    public static readonly Color BackgroundInput  = ColorFromHex("#2A2D42");
+    /// <summary>Input field background</summary>
+    public static readonly Color BackgroundInput  = ColorFromHex("#FFFFFF");
 
-    /// <summary>Primary accent — indigo blue.</summary>
-    public static readonly Color AccentPrimary    = ColorFromHex("#4F6EF7");
+    /// <summary>Primary accent — brand.primary</summary>
+    public static readonly Color AccentPrimary    = ColorFromHex("#0A828C");
 
-    /// <summary>Accent hover state.</summary>
-    public static readonly Color AccentHover      = ColorFromHex("#6B87FA");
+    /// <summary>Accent hover state — brand.primaryHover</summary>
+    public static readonly Color AccentHover      = ColorFromHex("#086972");
 
-    /// <summary>Success / positive actions.</summary>
-    public static readonly Color AccentSuccess    = ColorFromHex("#22C55E");
+    /// <summary>Success / positive actions — semantic.success</summary>
+    public static readonly Color AccentSuccess    = ColorFromHex("#0F7B3F");
 
-    /// <summary>Warning / caution.</summary>
-    public static readonly Color AccentWarning    = ColorFromHex("#F59E0B");
+    /// <summary>Warning / caution — semantic.warning</summary>
+    public static readonly Color AccentWarning    = ColorFromHex("#E17B3A");
 
-    /// <summary>Error / danger.</summary>
-    public static readonly Color AccentDanger     = ColorFromHex("#EF4444");
+    /// <summary>Error / danger — semantic.danger</summary>
+    public static readonly Color AccentDanger     = ColorFromHex("#D32F2F");
 
-    /// <summary>Primary text — light slate.</summary>
-    public static readonly Color TextPrimary      = ColorFromHex("#F1F5F9");
+    /// <summary>Primary text — text.primary</summary>
+    public static readonly Color TextPrimary      = ColorFromHex("#1A1D21");
 
-    /// <summary>Secondary / dimmed text.</summary>
-    public static readonly Color TextSecondary    = ColorFromHex("#8B95A9");
+    /// <summary>Secondary / dimmed text — text.secondary</summary>
+    public static readonly Color TextSecondary    = ColorFromHex("#5C6470");
 
-    /// <summary>Muted / placeholder text.</summary>
-    public static readonly Color TextMuted        = ColorFromHex("#4B5468");
+    /// <summary>Muted / placeholder text — text.tertiary</summary>
+    public static readonly Color TextMuted        = ColorFromHex("#8A919C");
 
-    /// <summary>Text on accent color buttons.</summary>
+    /// <summary>Text on accent color buttons — text.onPrimaryBrand</summary>
     public static readonly Color TextOnAccent     = Color.White;
 
-    /// <summary>Default border.</summary>
-    public static readonly Color BorderDefault    = ColorFromHex("#2D3147");
+    /// <summary>Default border — neutral.border</summary>
+    public static readonly Color BorderDefault    = ColorFromHex("#E1E4E8");
 
-    /// <summary>Focused border.</summary>
-    public static readonly Color BorderFocus      = ColorFromHex("#4F6EF7");
+    /// <summary>Focused border — state.focusRing</summary>
+    public static readonly Color BorderFocus      = ColorFromHex("#0A828C");
 
     // ── Fonts ─────────────────────────────────────────────────────────────────
 
-    public static readonly Font FontDisplay   = new Font("Segoe UI", 22f, FontStyle.Bold);
-    public static readonly Font FontTitle     = new Font("Segoe UI", 15f, FontStyle.Bold);
-    public static readonly Font FontHeading   = new Font("Segoe UI", 11f, FontStyle.Bold);
-    public static readonly Font FontBody      = new Font("Segoe UI", 9.5f, FontStyle.Regular);
-    public static readonly Font FontBodyBold  = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-    public static readonly Font FontSmall     = new Font("Segoe UI", 8f,  FontStyle.Regular);
-    public static readonly Font FontCaption   = new Font("Segoe UI", 7.5f, FontStyle.Regular);
-    public static readonly Font FontButton    = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-    public static readonly Font FontInput     = new Font("Segoe UI", 10f, FontStyle.Regular);
+    private const string FontFamily = "Segoe UI Variable"; // System fallback is Segoe UI
+
+    public static readonly Font FontDisplay   = new Font(FontFamily, 28f, FontStyle.Bold);
+    public static readonly Font FontTitle     = new Font(FontFamily, 20f, FontStyle.Bold);
+    public static readonly Font FontHeading   = new Font(FontFamily, 16f, FontStyle.Bold);
+    public static readonly Font FontBody      = new Font(FontFamily, 12f, FontStyle.Regular);
+    public static readonly Font FontBodyBold  = new Font(FontFamily, 12f, FontStyle.Bold);
+    public static readonly Font FontSmall     = new Font(FontFamily, 10f, FontStyle.Regular);
+    public static readonly Font FontCaption   = new Font(FontFamily, 9f, FontStyle.Regular);
+    public static readonly Font FontButton    = new Font(FontFamily, 12f, FontStyle.Bold);
+    public static readonly Font FontInput     = new Font(FontFamily, 12f, FontStyle.Regular);
 
     // ── Control Styling Helpers ───────────────────────────────────────────────
 
-    /// <summary>Applies the dark theme to a Form and all its controls recursively.</summary>
-    public static void ApplyDarkTheme(Form form)
+    /// <summary>Applies the Fluent 2 Light theme to a Form and all its controls recursively.</summary>
+    public static void ApplyTheme(Form form)
     {
         form.BackColor = BackgroundDark;
         form.ForeColor = TextPrimary;
@@ -80,7 +82,7 @@ public static class AppTheme
     }
 
     /// <summary>
-    /// Styles a TextBox to match the dark theme with custom border painting.
+    /// Styles a TextBox to match the light theme with custom border painting.
     /// Returns a Panel wrapper that draws the border.
     /// </summary>
     public static Panel WrapInputPanel(TextBox textBox, string placeholder = "")
@@ -151,7 +153,7 @@ public static class AppTheme
 
         btn.MouseEnter += (s, e) =>
         {
-            btn.BackColor = BackgroundInput;
+            btn.BackColor = ColorFromHex("#EFF2F6"); // neutral.backgroundAlt
             btn.ForeColor = TextPrimary;
         };
         btn.MouseLeave += (s, e) =>

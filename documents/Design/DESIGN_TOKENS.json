@@ -1,0 +1,220 @@
+{
+  "$schema": "DrMusa Design Tokens v1.0",
+  "meta": {
+    "project": "DrMusa",
+    "platform": "WPF (.NET 8, MVVM)",
+    "inspiration": "Microsoft Fluent 2",
+    "lastUpdated": "2026-07-14"
+  },
+
+  "typography": {
+    "fontFamily": {
+      "primary": "Segoe UI Variable",
+      "fallback": "Segoe UI, Arial, sans-serif",
+      "monospace": "Cascadia Mono, Consolas, monospace"
+    },
+    "fontSize": {
+      "displayLarge": 40,
+      "displaySmall": 32,
+      "titleLarge": 28,
+      "title": 24,
+      "subtitleLarge": 20,
+      "subtitle": 18,
+      "bodyLarge": 16,
+      "body": 14,
+      "bodyStrong": 14,
+      "caption": 12,
+      "captionSmall": 11
+    },
+    "fontWeight": {
+      "regular": 400,
+      "medium": 500,
+      "semiBold": 600,
+      "bold": 700
+    },
+    "lineHeight": {
+      "displayLarge": 52,
+      "displaySmall": 40,
+      "titleLarge": 36,
+      "title": 32,
+      "subtitleLarge": 28,
+      "subtitle": 24,
+      "bodyLarge": 22,
+      "body": 20,
+      "caption": 16,
+      "captionSmall": 14
+    },
+    "letterSpacing": {
+      "tight": -0.2,
+      "normal": 0,
+      "wide": 0.2
+    }
+  },
+
+  "color": {
+    "brand": {
+      "primary": "#0F6CBD",
+      "primaryHover": "#115EA3",
+      "primaryPressed": "#0C3B5E",
+      "primaryDisabled": "#C7D9EA",
+      "onPrimary": "#FFFFFF"
+    },
+    "secondary": {
+      "default": "#5B5FC7",
+      "hover": "#4F53B7",
+      "pressed": "#3B3F8F",
+      "onSecondary": "#FFFFFF"
+    },
+    "semantic": {
+      "success": "#0F7B3F",
+      "successBg": "#DFF6E4",
+      "successBorder": "#8FD8A4",
+      "warning": "#9D5D00",
+      "warningBg": "#FFF4CE",
+      "warningBorder": "#F2C866",
+      "danger": "#C4314B",
+      "dangerBg": "#FDE7EA",
+      "dangerBorder": "#F1A6B2",
+      "info": "#0F6CBD",
+      "infoBg": "#E5F1FB",
+      "infoBorder": "#8FC4EE"
+    },
+    "neutral": {
+      "background": "#F5F7FA",
+      "backgroundAlt": "#EFF2F6",
+      "surface": "#FFFFFF",
+      "surfaceAlt": "#FAFBFC",
+      "border": "#E1E4E8",
+      "borderStrong": "#C7CCD1",
+      "divider": "#EBEDEF",
+      "overlay": "rgba(0,0,0,0.4)"
+    },
+    "text": {
+      "primary": "#1A1D21",
+      "secondary": "#5C6470",
+      "tertiary": "#8A919C",
+      "disabled": "#B2B8C0",
+      "onPrimaryBrand": "#FFFFFF",
+      "link": "#0F6CBD",
+      "linkHover": "#0C3B5E"
+    },
+    "medical": {
+      "critical": "#C4314B",
+      "stable": "#0F7B3F",
+      "pending": "#9D5D00",
+      "inProgress": "#0F6CBD",
+      "discharged": "#5C6470"
+    },
+    "state": {
+      "hoverOverlay": "rgba(15,108,189,0.06)",
+      "pressedOverlay": "rgba(15,108,189,0.12)",
+      "focusRing": "#0F6CBD",
+      "selectedBg": "#E5F1FB"
+    }
+  },
+
+  "spacing": {
+    "xxs": 4,
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "xxl": 40,
+    "xxxl": 48
+  },
+
+  "cornerRadius": {
+    "button": 4,
+    "input": 4,
+    "card": 8,
+    "dialog": 8,
+    "badge": 12,
+    "tooltip": 4,
+    "chip": 16
+  },
+
+  "borderWidth": {
+    "thin": 1,
+    "default": 1,
+    "thick": 2,
+    "focus": 2
+  },
+
+  "shadow": {
+    "none": "none",
+    "flat": "0 0 0 1px rgba(0,0,0,0.06)",
+    "card": "0 1px 2px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06)",
+    "raised": "0 2px 4px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.08)",
+    "dialog": "0 8px 16px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.10)",
+    "flyout": "0 4px 8px rgba(0,0,0,0.12)"
+  },
+
+  "opacity": {
+    "disabled": 0.4,
+    "hoverOverlay": 0.06,
+    "pressedOverlay": 0.12,
+    "overlayScrim": 0.4,
+    "divider": 1.0
+  },
+
+  "animation": {
+    "durationFast": 100,
+    "durationNormal": 150,
+    "durationSlow": 250,
+    "easingStandard": "CubicEase EaseOut",
+    "easingDecelerate": "QuadraticEase EaseOut",
+    "note": "Use sparingly. See AGENTS.md — no unnecessary animation."
+  },
+
+  "window": {
+    "minWidth": 1280,
+    "minHeight": 720,
+    "standardWidth": 1366,
+    "standardHeight": 768,
+    "dialogSmallWidth": 400,
+    "dialogMediumWidth": 560,
+    "dialogLargeWidth": 800,
+    "sidebarWidth": 260,
+    "sidebarCollapsedWidth": 64,
+    "topBarHeight": 56
+  },
+
+  "iconSize": {
+    "xs": 12,
+    "sm": 16,
+    "md": 20,
+    "lg": 24,
+    "xl": 32,
+    "xxl": 48
+  },
+
+  "controlHeight": {
+    "buttonSmall": 28,
+    "buttonMedium": 32,
+    "buttonLarge": 40,
+    "inputSmall": 28,
+    "inputMedium": 32,
+    "inputLarge": 40,
+    "tableRow": 40,
+    "tableRowCompact": 32,
+    "tableHeaderRow": 40,
+    "checkboxRadio": 18
+  },
+
+  "scrollbar": {
+    "width": 12,
+    "thumbWidth": 6,
+    "trackColor": "#F5F7FA",
+    "thumbColor": "#C7CCD1",
+    "thumbHoverColor": "#8A919C"
+  },
+
+  "elevation": {
+    "z0": 0,
+    "z1": 1,
+    "z2": 2,
+    "z3": 3,
+    "note": "z0 = base surface, z1 = card, z2 = flyout/dropdown, z3 = dialog/modal"
+  }
+}

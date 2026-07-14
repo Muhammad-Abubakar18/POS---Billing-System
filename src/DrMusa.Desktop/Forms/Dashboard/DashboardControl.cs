@@ -36,7 +36,7 @@ public partial class DashboardControl : UserControl
     {
         BackColor = AppTheme.BackgroundDark;
         Padding = new Padding(24);
-        AutoScroll = true;
+        AutoScroll = false;
 
         // Dashboard heading
         var lblDash = new Label
@@ -46,29 +46,31 @@ public partial class DashboardControl : UserControl
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize = true,
-            Location = new Point(24, 20)
         };
-
+        
         var lblDate = new Label
         {
             Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy"),
             Font = new Font("Segoe UI", 9f),
             ForeColor = AppTheme.TextSecondary,
             BackColor = Color.Transparent,
-            AutoSize = true,
-            Location = new Point(24, 52)
+            AutoSize = true
         };
 
-        // Stat cards row
+        lblDash.Location = new Point(0, 0);
+        lblDate.Location = new Point(0, 42);
+        var headerPanel = new Panel { Dock = DockStyle.Fill, Height = 80, BackColor = Color.Transparent, Margin = new Padding(0, 0, 0, 16) };
+        headerPanel.Controls.AddRange(new Control[] { lblDash, lblDate });
+
         var statsPanel = new FlowLayoutPanel
         {
-            Location = new Point(24, 88),
-            Size = new Size(1232, 110),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+            Dock = DockStyle.Fill,
             FlowDirection = FlowDirection.LeftToRight,
-            WrapContents = false,
+            WrapContents = true,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
             BackColor = Color.Transparent,
-            AutoSize = false
+            Margin = new Padding(0, 0, 0, 16)
         };
 
         var stats = new[]
@@ -97,28 +99,20 @@ public partial class DashboardControl : UserControl
             statsPanel.Controls.Add(card);
         }
 
-        // --- Data Grids & Chart Section ---
-        
         var layoutPanel = new TableLayoutPanel
         {
-            Location = new Point(24, 220),
-            Size = new Size(1200, 600),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+            Dock = DockStyle.Fill,
             ColumnCount = 2,
             RowCount = 2,
-            BackColor = Color.Transparent
+            BackColor = Color.Transparent,
+            Margin = new Padding(0)
         };
         layoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         layoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         layoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
         layoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
-        _chartPanel = new Panel
-        {
-            Dock = DockStyle.Fill,
-            BackColor = AppTheme.BackgroundCard,
-            Margin = new Padding(0, 0, 10, 10)
-        };
+        _chartPanel = new Panel { Dock = DockStyle.Fill, BackColor = AppTheme.BackgroundCard, Margin = new Padding(0, 0, 10, 10) };
         _chartPanel.Paint += ChartPanel_Paint;
 
         _gridRecent = CreateDataGrid();
@@ -130,7 +124,23 @@ public partial class DashboardControl : UserControl
         layoutPanel.Controls.Add(CreateSectionPanel("Top Selling Products", _gridTopSelling), 0, 1);
         layoutPanel.Controls.Add(CreateSectionPanel("Low Stock Alerts", _gridLowStock), 1, 1);
 
-        Controls.AddRange(new Control[] { lblDash, lblDate, statsPanel, layoutPanel });
+        var rootTable = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 3,
+            BackColor = Color.Transparent,
+            Padding = new Padding(24)
+        };
+        rootTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        rootTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        rootTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+        rootTable.Controls.Add(headerPanel, 0, 0);
+        rootTable.Controls.Add(statsPanel, 0, 1);
+        rootTable.Controls.Add(layoutPanel, 0, 2);
+
+        Controls.Add(rootTable);
     }
 
     private Panel CreateSectionPanel(string title, Control content)
@@ -205,7 +215,7 @@ public partial class DashboardControl : UserControl
     {
         var card = new Panel
         {
-            Size = new Size(184, 100),
+            Size = new Size(184, 120),
             BackColor = AppTheme.BackgroundCard,
             Margin = new Padding(0, 0, 16, 0)
         };
@@ -221,29 +231,29 @@ public partial class DashboardControl : UserControl
         var lblIcon = new Label
         {
             Text = icon,
-            Font = new Font("Segoe UI Emoji", 16f),
+            Font = new Font("Segoe UI Emoji", 14f),
             ForeColor = accent,
             BackColor = Color.Transparent,
             AutoSize = true,
-            Location = new Point(16, 16)
+            Location = new Point(16, 12)
         };
 
         var lblTitle = new Label
         {
             Text = title,
-            Font = new Font("Segoe UI", 8f, FontStyle.Regular),
+            Font = new Font("Segoe UI", 8.5f, FontStyle.Regular),
             ForeColor = AppTheme.TextSecondary,
             BackColor = Color.Transparent,
             AutoSize = true,
-            Location = new Point(16, 60)
+            Location = new Point(16, 85)
         };
 
         valueLabel.Text = "—";
-        valueLabel.Font = new Font("Segoe UI", 14f, FontStyle.Bold);
+        valueLabel.Font = new Font("Segoe UI Variable", 16f, FontStyle.Bold);
         valueLabel.ForeColor = AppTheme.TextPrimary;
         valueLabel.BackColor = Color.Transparent;
         valueLabel.AutoSize = true;
-        valueLabel.Location = new Point(16, 36);
+        valueLabel.Location = new Point(16, 48);
 
         card.Controls.AddRange(new Control[] { lblIcon, valueLabel, lblTitle });
         return card;

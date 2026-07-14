@@ -144,20 +144,26 @@ public partial class BillingForm : Form
         _gridCart.CellValueChanged += GridCart_CellValueChanged;
         _gridCart.DataError += (s, e) => { e.Cancel = true; };
 
-        var pnlCheckout = new Panel { Dock = DockStyle.Bottom, Height = 320, Padding = new Padding(0, 10, 0, 0) };
-        
-        _lblSubTotal = new Label { Text = "SubTotal: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Location = new Point(0, 10) };
-        
+        var pnlCheckout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Bottom,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            ColumnCount = 1,
+            RowCount = 5,
+            Padding = new Padding(0, 10, 0, 0)
+        };
+
+        _lblSubTotal = new Label { Text = "SubTotal: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Margin = new Padding(0, 0, 0, 10) };
+
         _txtDiscount = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right };
         _txtDiscount.TextChanged += (s, e) => CalculateTotals();
         var pnlDisc = AppTheme.WrapInputPanel(_txtDiscount, "Disc %");
-        pnlDisc.Location = new Point(0, 40);
         pnlDisc.Width = 100;
 
         _txtTax = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right };
         _txtTax.TextChanged += (s, e) => CalculateTotals();
         var pnlTax = AppTheme.WrapInputPanel(_txtTax, "Tax %");
-        pnlTax.Location = new Point(110, 40);
         pnlTax.Width = 100;
 
         var cmbOrderType = new ComboBox { Width = 100, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 10f), Location = new Point(0, 20) };
@@ -166,37 +172,47 @@ public partial class BillingForm : Form
         cmbOrderType.SelectedIndexChanged += (s, e) => {
             _selectedOrderType = (OrderType)cmbOrderType.SelectedIndex;
         };
-        var pnlOrderType = new Panel { Width = 120, Height = 60, Location = new Point(220, 40) };
+        var pnlOrderType = new Panel { Width = 120, Height = 60 };
         pnlOrderType.Controls.Add(new Label { Text = "Order Type", ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true });
         pnlOrderType.Controls.Add(cmbOrderType);
 
-        _lblTotal = new Label { Text = "Total: 0.00", Font = new Font("Segoe UI", 16f, FontStyle.Bold), ForeColor = AppTheme.AccentSuccess, AutoSize = true, Location = new Point(0, 110) };
+        var row1 = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.LeftToRight, WrapContents = false, Margin = new Padding(0, 0, 0, 10) };
+        row1.Controls.AddRange(new Control[] { pnlDisc, pnlTax, pnlOrderType });
 
-        _btnCash = new Button { Text = "Cash", Width = 100, Height = 40, Location = new Point(0, 160) };
+        _lblTotal = new Label { Text = "Total: 0.00", Font = new Font("Segoe UI Variable", 16f, FontStyle.Bold), ForeColor = AppTheme.AccentSuccess, AutoSize = true, Margin = new Padding(0, 0, 0, 10) };
+
+        _btnCash = new Button { Text = "Cash", Width = 90, Height = 40 };
         AppTheme.StylePrimaryButton(_btnCash);
         _btnCash.Click += (s, e) => SelectPayment(PaymentMethod.Cash);
 
-        _btnCard = new Button { Text = "Card", Width = 100, Height = 40, Location = new Point(110, 160) };
+        _btnCard = new Button { Text = "Card", Width = 90, Height = 40 };
         AppTheme.StyleSecondaryButton(_btnCard);
         _btnCard.Click += (s, e) => SelectPayment(PaymentMethod.Card);
 
-        _txtPaidAmount = new TextBox { Width = 100, Text = "0", TextAlign = HorizontalAlignment.Right };
+        _txtPaidAmount = new TextBox { Width = 90, Text = "0", TextAlign = HorizontalAlignment.Right };
         _txtPaidAmount.TextChanged += (s, e) => CalculateTotals();
         var pnlPaid = AppTheme.WrapInputPanel(_txtPaidAmount, "Paid Amt");
-        pnlPaid.Location = new Point(220, 160);
-        pnlPaid.Width = 120;
+        pnlPaid.Width = 110;
 
-        _lblChange = new Label { Text = "Change: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Location = new Point(220, 215) };
+        _lblChange = new Label { Text = "Change: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Padding = new Padding(0, 10, 0, 0) };
 
-        _btnComplete = new Button { Text = "Complete Order", Dock = DockStyle.Bottom, Height = 50, Font = new Font("Segoe UI", 12f, FontStyle.Bold) };
+        var row2 = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.LeftToRight, WrapContents = true, Margin = new Padding(0, 0, 0, 10) };
+        row2.Controls.AddRange(new Control[] { _btnCash, _btnCard, pnlPaid, _lblChange });
+
+        _btnComplete = new Button { Text = "Complete Order", Dock = DockStyle.Fill, Height = 50, Font = new Font("Segoe UI", 12f, FontStyle.Bold), Margin = new Padding(0) };
         AppTheme.StylePrimaryButton(_btnComplete);
         _btnComplete.Click += async (s, e) => await CompleteOrderAsync();
 
-        pnlCheckout.Controls.AddRange(new Control[] { _lblSubTotal, pnlDisc, pnlTax, pnlOrderType, _lblTotal, _btnCash, _btnCard, pnlPaid, _lblChange, _btnComplete });
+        pnlCheckout.Controls.Add(_lblSubTotal, 0, 0);
+        pnlCheckout.Controls.Add(row1, 0, 1);
+        pnlCheckout.Controls.Add(_lblTotal, 0, 2);
+        pnlCheckout.Controls.Add(row2, 0, 3);
+        pnlCheckout.Controls.Add(_btnComplete, 0, 4);
 
-        rightPanel.Controls.Add(_gridCart);
-        rightPanel.Controls.Add(lblCartTitle);
         rightPanel.Controls.Add(pnlCheckout);
+        rightPanel.Controls.Add(lblCartTitle);
+        rightPanel.Controls.Add(_gridCart);
+        _gridCart.BringToFront();
 
         Controls.Add(mainSplit);
     }
@@ -222,14 +238,14 @@ public partial class BillingForm : Form
     {
         _pnlCategories.Controls.Clear();
 
-        var btnAll = new Button { Text = "All Categories", AutoSize = true, Height = 40, Padding = new Padding(10, 0, 10, 0), Cursor = Cursors.Hand };
+        var btnAll = new Button { Text = "All Categories", AutoSize = true, Height = 36, Padding = new Padding(10, 0, 10, 0), Cursor = Cursors.Hand };
         AppTheme.StylePrimaryButton(btnAll);
         btnAll.Click += (s, e) => { _selectedCategoryId = null; HighlightCategoryButton(btnAll); FilterProducts(); };
         _pnlCategories.Controls.Add(btnAll);
 
         foreach (var cat in _categories)
         {
-            var btn = new Button { Text = cat.Name, AutoSize = true, Height = 40, Padding = new Padding(10, 0, 10, 0), Cursor = Cursors.Hand };
+            var btn = new Button { Text = cat.Name, AutoSize = true, Height = 36, Padding = new Padding(10, 0, 10, 0), Cursor = Cursors.Hand };
             AppTheme.StyleSecondaryButton(btn);
             btn.Click += (s, e) => { _selectedCategoryId = cat.Id; HighlightCategoryButton(btn); FilterProducts(); };
             _pnlCategories.Controls.Add(btn);
