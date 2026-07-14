@@ -2,7 +2,7 @@ namespace DrMusa.Common.Enums;
 
 public enum UserRole
 {
-    Admin = 1,
-    Manager = 2,
+    Owner = 1,
+    SubAdmin = 2,
     Cashier = 3
 }

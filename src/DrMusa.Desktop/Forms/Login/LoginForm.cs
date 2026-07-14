@@ -473,7 +473,19 @@ public sealed class LoginForm : Form
 
             // Navigate to main shell
             var mainForm = new Forms.Dashboard.MainForm(_serviceProvider);
-            mainForm.FormClosed += (_, __) => this.Close();
+            mainForm.FormClosed += (_, __) => 
+            {
+                if (!SessionManager.IsLoggedIn)
+                {
+                    this.Show();
+                    _txtPassword.Clear();
+                    _txtUsername.Focus();
+                }
+                else
+                {
+                    this.Close();
+                }
+            };
             mainForm.Show();
             this.Hide();
         }

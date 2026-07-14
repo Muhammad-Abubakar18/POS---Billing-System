@@ -21,7 +21,7 @@ public static class DbSeeder
                 Username = "admin",
                 PasswordHash = PasswordHelper.HashPassword("admin123"),
                 FullName = "System Administrator",
-                Role = UserRole.Admin,
+                Role = UserRole.Owner,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             });

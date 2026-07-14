@@ -37,7 +37,7 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
 
         return new UserDto(user.Id, user.Username, user.FullName,
-                           user.Email, user.Phone, user.Role, user.IsActive);
+                           user.Email, user.Phone, user.Role, user.IsActive, user.LastLoginAt);
     }
 
     public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
@@ -68,6 +68,6 @@ public class AuthService : IAuthService
         var user = await _context.Users.FindAsync(userId);
         if (user == null || !user.IsActive) return null;
         return new UserDto(user.Id, user.Username, user.FullName,
-                           user.Email, user.Phone, user.Role, user.IsActive);
+                           user.Email, user.Phone, user.Role, user.IsActive, user.LastLoginAt);
     }
 }

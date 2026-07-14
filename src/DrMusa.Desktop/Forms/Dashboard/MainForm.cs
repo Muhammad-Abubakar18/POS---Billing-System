@@ -35,7 +35,11 @@ public partial class MainForm : Form
         _saleService     = serviceProvider.GetRequiredService<ISaleService>();
 
         BuildUI();
-        LoadDashboard();
+
+        if (SessionManager.HasRole(Common.Enums.UserRole.Cashier))
+            OpenBillingModule();
+        else
+            LoadDashboard();
     }
 
     // ── UI Construction ───────────────────────────────────────────────────────
@@ -190,25 +194,37 @@ public partial class MainForm : Form
 
         var btnDashboard = CreateSidebarButton("📊  Dashboard");
         btnDashboard.Click += (s, e) => LoadDashboard();
+        btnDashboard.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
 
         var btnCategories = CreateSidebarButton("🏷️  Categories");
         btnCategories.Click += (s, e) => OpenCategoriesModule();
+        btnCategories.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
 
         var btnProducts = CreateSidebarButton("📦  Products");
         btnProducts.Click += (s, e) => OpenProductsModule();
+        btnProducts.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
 
         var btnInventory = CreateSidebarButton("📦  Inventory");
         btnInventory.Click += (s, e) => OpenInventoryModule();
+        btnInventory.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
 
         var btnBilling = CreateSidebarButton("🛒  Billing");
         btnBilling.Click += (s, e) => OpenBillingModule();
+        btnBilling.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin, DrMusa.Common.Enums.UserRole.Cashier);
         
         var btnCustomers = CreateSidebarButton("👥  Customers");
+        btnCustomers.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
+        
         var btnReports = CreateSidebarButton("📈  Reports");
         btnReports.Click += (s, e) => OpenReportsModule();
+        btnReports.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
+
+        var btnUsers = CreateSidebarButton("🧑‍💼  Users");
+        btnUsers.Click += (s, e) => OpenUsersModule();
+        btnUsers.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
 
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
-        _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
+        _sideBar.Controls.AddRange(new Control[] { btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)
@@ -258,6 +274,16 @@ public partial class MainForm : Form
         {
             f.Show();
         }
+    }
+
+    private void OpenUsersModule()
+    {
+        var usersForm = new DrMusa.Desktop.Forms.Users.UsersForm(_serviceProvider)
+        {
+            TopLevel = false,
+            FormBorderStyle = FormBorderStyle.None
+        };
+        LoadContent(usersForm);
     }
 
     private async void LoadDashboard()
@@ -390,8 +416,6 @@ public partial class MainForm : Form
 
         SessionManager.Clear();
 
-        var loginForm = new LoginForm(_serviceProvider);
-        loginForm.Show();
         this.Close();
     }
 }

@@ -9,14 +9,21 @@ public record UserDto(
     string? Email,
     string? Phone,
     UserRole Role,
-    bool IsActive
+    bool IsActive,
+    DateTime? LastLoginAt
 );
 
 public record CreateUserDto(
     string Username,
-    string Password,
     string FullName,
-    string? Email,
-    string? Phone,
-    UserRole Role
+    UserRole Role,
+    string Password,
+    bool IsActive
+);
+
+public record UpdateUserDto(
+    string Username,
+    string FullName,
+    UserRole Role,
+    bool IsActive
 );

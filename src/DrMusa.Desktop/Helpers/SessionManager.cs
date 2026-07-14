@@ -75,12 +75,19 @@ public static class SessionManager
         => LastActivity = DateTime.Now;
 
     /// <summary>Checks if the current user has the specified role.</summary>
-    public static bool HasRole(UserRole role)
-        => CurrentRole == role;
+    public static bool HasRole(params UserRole[] roles)
+    {
+        if (!IsLoggedIn || CurrentRole == null) return false;
+        
+        // Owner has access to everything
+        if (CurrentRole == UserRole.Owner) return true;
 
-    /// <summary>Checks if current user is Admin or Manager.</summary>
-    public static bool IsAdminOrManager
-        => CurrentRole is UserRole.Admin or UserRole.Manager;
+        return roles.Contains(CurrentRole.Value);
+    }
+
+    /// <summary>Checks if current user is Owner or SubAdmin.</summary>
+    public static bool IsOwnerOrSubAdmin
+        => CurrentRole is UserRole.Owner or UserRole.SubAdmin;
 
     // ── Persistence ───────────────────────────────────────────────────────────
 
