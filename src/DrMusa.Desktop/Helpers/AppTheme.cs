@@ -61,15 +61,15 @@ public static class AppTheme
 
     private const string FontFamily = "Segoe UI Variable"; // System fallback is Segoe UI
 
-    public static readonly Font FontDisplay   = new Font(FontFamily, 28f, FontStyle.Bold);
-    public static readonly Font FontTitle     = new Font(FontFamily, 20f, FontStyle.Bold);
-    public static readonly Font FontHeading   = new Font(FontFamily, 16f, FontStyle.Bold);
-    public static readonly Font FontBody      = new Font(FontFamily, 12f, FontStyle.Regular);
-    public static readonly Font FontBodyBold  = new Font(FontFamily, 12f, FontStyle.Bold);
-    public static readonly Font FontSmall     = new Font(FontFamily, 10f, FontStyle.Regular);
-    public static readonly Font FontCaption   = new Font(FontFamily, 9f, FontStyle.Regular);
-    public static readonly Font FontButton    = new Font(FontFamily, 12f, FontStyle.Bold);
-    public static readonly Font FontInput     = new Font(FontFamily, 12f, FontStyle.Regular);
+    public static readonly Font FontDisplay   = new Font(FontFamily, 24f, FontStyle.Bold);
+    public static readonly Font FontTitle     = new Font(FontFamily, 18f, FontStyle.Bold);
+    public static readonly Font FontHeading   = new Font(FontFamily, 14f, FontStyle.Bold);
+    public static readonly Font FontBody      = new Font(FontFamily, 10f, FontStyle.Regular);
+    public static readonly Font FontBodyBold  = new Font(FontFamily, 10f, FontStyle.Bold);
+    public static readonly Font FontSmall     = new Font(FontFamily, 9f, FontStyle.Regular);
+    public static readonly Font FontCaption   = new Font(FontFamily, 8f, FontStyle.Regular);
+    public static readonly Font FontButton    = new Font(FontFamily, 10f, FontStyle.Bold);
+    public static readonly Font FontInput     = new Font(FontFamily, 10.5f, FontStyle.Regular);
 
     // ── Control Styling Helpers ───────────────────────────────────────────────
 
