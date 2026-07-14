@@ -178,6 +178,30 @@ public static class AppTheme
         btn.MouseLeave += (s, e) => btn.BackColor = AccentDanger;
     }
 
+    /// <summary>Styles a DataGridView.</summary>
+    public static void StyleDataGridView(DataGridView grid)
+    {
+        grid.BackgroundColor = BackgroundCard;
+        grid.BorderStyle = BorderStyle.None;
+        grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+        grid.DefaultCellStyle.SelectionBackColor = ColorFromHex("#EFF2F6");
+        grid.DefaultCellStyle.SelectionForeColor = TextPrimary;
+        grid.DefaultCellStyle.BackColor = BackgroundCard;
+        grid.DefaultCellStyle.ForeColor = TextPrimary;
+        grid.DefaultCellStyle.Font = FontBody;
+        
+        grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+        grid.ColumnHeadersDefaultCellStyle.BackColor = BackgroundDark;
+        grid.ColumnHeadersDefaultCellStyle.ForeColor = TextSecondary;
+        grid.ColumnHeadersDefaultCellStyle.Font = FontBodyBold;
+        grid.EnableHeadersVisualStyles = false;
+        
+        grid.GridColor = BorderDefault;
+        grid.RowHeadersVisible = false;
+        grid.RowTemplate.Height = 40;
+        grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+    }
+
     /// <summary>Creates a separator line.</summary>
     public static Panel CreateSeparator(bool horizontal = true)
     {

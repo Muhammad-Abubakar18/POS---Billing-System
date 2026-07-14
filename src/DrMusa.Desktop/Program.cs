@@ -33,7 +33,31 @@ internal static class Program
             var dbPath = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
                 "..", "..", "..", "..", "..", "database", "DrMusa.db");
-            var connectionString = $"Data Source={Path.GetFullPath(dbPath)}";
+            var dbFullPath = Path.GetFullPath(dbPath);
+            var connectionString = $"Data Source={dbFullPath}";
+
+            // Automatic Backup Logic
+            try
+            {
+                var backupDir = Path.Combine(Path.GetDirectoryName(dbFullPath)!, "backups");
+                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+
+                string todayBackupPath = Path.Combine(backupDir, $"DrMusa_Backup_{DateTime.Now:yyyyMMdd}.db");
+                if (File.Exists(dbFullPath) && !File.Exists(todayBackupPath))
+                {
+                    File.Copy(dbFullPath, todayBackupPath, true);
+                    
+                    // Cleanup backups older than 7 days
+                    var oldBackups = Directory.GetFiles(backupDir, "DrMusa_Backup_*.db")
+                        .Select(f => new FileInfo(f))
+                        .Where(f => f.CreationTime < DateTime.Now.AddDays(-7));
+                    foreach (var old in oldBackups) { try { old.Delete(); } catch { } }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Failed to perform automatic database backup.");
+            }
 
             services.AddDrMusaServices(connectionString);
 

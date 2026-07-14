@@ -151,6 +151,32 @@ public partial class SettingsForm : Form
         tabGuide.Controls.Add(txtGuide);
         tabs.TabPages.Add(tabGuide);
 
+        // --- Tab: Database & Security ---
+        var tabDb = new TabPage("Database & Security");
+        tabDb.BackColor = AppTheme.BackgroundPanel;
+
+        var lblDbInfo = new Label
+        {
+            Text = "Manage your POS Database backups. Automatic backups are taken daily upon startup.",
+            Font = new Font("Segoe UI", 11f),
+            ForeColor = AppTheme.TextPrimary,
+            AutoSize = true,
+            Location = new Point(20, 20)
+        };
+        tabDb.Controls.Add(lblDbInfo);
+
+        var btnBackup = new Button { Text = "Manual Backup", Width = 200, Height = 45, Location = new Point(20, 60) };
+        AppTheme.StyleSecondaryButton(btnBackup);
+        btnBackup.Click += BtnBackup_Click;
+        tabDb.Controls.Add(btnBackup);
+
+        var btnRestore = new Button { Text = "Restore Database", Width = 200, Height = 45, Location = new Point(240, 60) };
+        AppTheme.StyleDangerButton(btnRestore);
+        btnRestore.Click += BtnRestore_Click;
+        tabDb.Controls.Add(btnRestore);
+
+        tabs.TabPages.Add(tabDb);
+
         // --- Bottom Action ---
         var btnSave = new Button { Text = "Save Settings", Width = 150, Height = 45, Location = new Point(20, 590) };
         AppTheme.StylePrimaryButton(btnSave);
@@ -235,6 +261,67 @@ public partial class SettingsForm : Form
         catch (Exception ex)
         {
             UIHelper.ShowError($"Failed to save settings: {ex.Message}");
+        }
+    }
+
+    private void BtnBackup_Click(object? sender, EventArgs e)
+    {
+        using var dlg = new SaveFileDialog
+        {
+            Filter = "SQLite Database|*.db",
+            Title = "Save Database Backup",
+            FileName = $"DrMusa_ManualBackup_{DateTime.Now:yyyyMMdd_HHmmss}.db"
+        };
+
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+            try
+            {
+                var dbPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "database", "DrMusa.db"));
+                File.Copy(dbPath, dlg.FileName, overwrite: true);
+                UIHelper.ShowSuccess("Database successfully backed up to:\n" + dlg.FileName);
+            }
+            catch (Exception ex)
+            {
+                UIHelper.ShowError($"Failed to backup database: {ex.Message}");
+            }
+        }
+    }
+
+    private void BtnRestore_Click(object? sender, EventArgs e)
+    {
+        var confirm = MessageBox.Show(
+            "WARNING: Restoring a database will OVERWRITE all your current data (sales, users, inventory).\n\n" +
+            "The application will restart after the restore. Are you absolutely sure?", 
+            "Critical Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+        if (confirm != DialogResult.Yes) return;
+
+        using var dlg = new OpenFileDialog
+        {
+            Filter = "SQLite Database|*.db",
+            Title = "Select Database Backup to Restore"
+        };
+
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+            try
+            {
+                var dbPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "database", "DrMusa.db"));
+                
+                // Clear active EF connections to release file lock
+                Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+                
+                File.Copy(dlg.FileName, dbPath, overwrite: true);
+                
+                MessageBox.Show("Database restored successfully! The application will now restart.", "Restore Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Application.Restart();
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                UIHelper.ShowError($"Failed to restore database: {ex.Message}\nMake sure no other instances of the app are open.");
+            }
         }
     }
 }

@@ -16,7 +16,9 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
                        .FirstOrDefaultAsync(s => s.Id == saleId);
 
     public async Task<IEnumerable<Sale>> GetByDateRangeAsync(DateTime from, DateTime to)
-        => await _dbSet.Where(s => s.SaleDate >= from && s.SaleDate <= to)
+        => await _dbSet.Include(s => s.SaleItems)
+                       .ThenInclude(si => si.Product)
+                       .Where(s => s.SaleDate >= from && s.SaleDate <= to)
                        .OrderByDescending(s => s.SaleDate)
                        .ToListAsync();
 

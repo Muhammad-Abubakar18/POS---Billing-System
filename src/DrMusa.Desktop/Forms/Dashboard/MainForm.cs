@@ -211,6 +211,10 @@ public partial class MainForm : Form
         var btnBilling = CreateSidebarButton("🛒  Billing");
         btnBilling.Click += (s, e) => OpenBillingModule();
         btnBilling.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin, DrMusa.Common.Enums.UserRole.Cashier);
+
+        var btnSales = CreateSidebarButton("🧾  Sales History");
+        btnSales.Click += (s, e) => OpenSalesModule();
+        btnSales.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin, DrMusa.Common.Enums.UserRole.Cashier);
         
         var btnCustomers = CreateSidebarButton("👥  Customers");
         btnCustomers.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
@@ -228,7 +232,7 @@ public partial class MainForm : Form
         btnSettings.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
 
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
-        _sideBar.Controls.AddRange(new Control[] { btnSettings, btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnBilling, btnDashboard });
+        _sideBar.Controls.AddRange(new Control[] { btnSettings, btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnSales, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)
@@ -298,6 +302,16 @@ public partial class MainForm : Form
             FormBorderStyle = FormBorderStyle.None
         };
         LoadContent(settingsForm);
+    }
+
+    private void OpenSalesModule()
+    {
+        var salesForm = new DrMusa.Desktop.Forms.Sales.SalesHistoryForm(_serviceProvider)
+        {
+            TopLevel = false,
+            FormBorderStyle = FormBorderStyle.None
+        };
+        LoadContent(salesForm);
     }
 
     private async void LoadDashboard()
