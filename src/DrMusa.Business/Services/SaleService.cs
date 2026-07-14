@@ -87,6 +87,7 @@ public class SaleService : ISaleService
             PaidAmount = dto.PaidAmount,
             ChangeAmount = change,
             PaymentMethod = dto.PaymentMethod,
+            OrderType = dto.OrderType,
             Status = SaleStatus.Completed,
             Notes = dto.Notes,
             SaleItems = saleItems
@@ -185,7 +186,7 @@ public class SaleService : ISaleService
         s.SaleDate, s.SubTotal,
         s.DiscountAmount, s.TaxAmount,
         s.TotalAmount, s.PaidAmount, s.ChangeAmount,
-        s.PaymentMethod, s.Status,
+        s.PaymentMethod, s.OrderType, s.Status,
         s.SaleItems.Select(si => new SaleItemDto(
             si.ProductId, si.Product?.Name ?? string.Empty,
             si.Quantity, si.UnitPrice,

@@ -26,6 +26,7 @@ public record CreateSaleDto(
     decimal TaxPercent,
     decimal PaidAmount,
     PaymentMethod PaymentMethod,
+    OrderType OrderType,
     string? Notes
 );
 
@@ -42,6 +43,7 @@ public record SaleDto(
     decimal PaidAmount,
     decimal ChangeAmount,
     PaymentMethod PaymentMethod,
+    OrderType OrderType,
     SaleStatus Status,
     IList<SaleItemDto> Items
 );

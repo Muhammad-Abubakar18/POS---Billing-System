@@ -39,6 +39,7 @@ public partial class BillingForm : Form
     private int? _selectedCategoryId = null;
     private BindingList<CartItem> _cart = new();
     private PaymentMethod _selectedPayment = PaymentMethod.Cash;
+    private OrderType _selectedOrderType = OrderType.DineIn;
 
     public BillingForm(IServiceProvider serviceProvider)
     {
@@ -159,6 +160,16 @@ public partial class BillingForm : Form
         pnlTax.Location = new Point(110, 40);
         pnlTax.Width = 100;
 
+        var cmbOrderType = new ComboBox { Width = 100, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 10f), Location = new Point(0, 20) };
+        cmbOrderType.Items.AddRange(new[] { "Dine In", "Takeaway", "Delivery" });
+        cmbOrderType.SelectedIndex = 0;
+        cmbOrderType.SelectedIndexChanged += (s, e) => {
+            _selectedOrderType = (OrderType)cmbOrderType.SelectedIndex;
+        };
+        var pnlOrderType = new Panel { Width = 120, Height = 60, Location = new Point(220, 40) };
+        pnlOrderType.Controls.Add(new Label { Text = "Order Type", ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true });
+        pnlOrderType.Controls.Add(cmbOrderType);
+
         _lblTotal = new Label { Text = "Total: 0.00", Font = new Font("Segoe UI", 16f, FontStyle.Bold), ForeColor = AppTheme.AccentSuccess, AutoSize = true, Location = new Point(0, 110) };
 
         _btnCash = new Button { Text = "Cash", Width = 100, Height = 40, Location = new Point(0, 160) };
@@ -181,7 +192,7 @@ public partial class BillingForm : Form
         AppTheme.StylePrimaryButton(_btnComplete);
         _btnComplete.Click += async (s, e) => await CompleteOrderAsync();
 
-        pnlCheckout.Controls.AddRange(new Control[] { _lblSubTotal, pnlDisc, pnlTax, _lblTotal, _btnCash, _btnCard, pnlPaid, _lblChange, _btnComplete });
+        pnlCheckout.Controls.AddRange(new Control[] { _lblSubTotal, pnlDisc, pnlTax, pnlOrderType, _lblTotal, _btnCash, _btnCard, pnlPaid, _lblChange, _btnComplete });
 
         rightPanel.Controls.Add(_gridCart);
         rightPanel.Controls.Add(lblCartTitle);
@@ -458,6 +469,7 @@ public partial class BillingForm : Form
             TaxPercent: taxPct,
             PaidAmount: paid,
             PaymentMethod: _selectedPayment,
+            OrderType: _selectedOrderType,
             Notes: ""
         );
 
@@ -465,7 +477,7 @@ public partial class BillingForm : Form
         {
             _btnComplete.Enabled = false;
             var sale = await _saleService.CreateSaleAsync(dto);
-            UIHelper.ShowSuccess($"Order Complete!\nInvoice: {sale.InvoiceNumber}");
+            UIHelper.ShowSuccess($"Order Complete!\nInvoice: {sale.InvoiceNumber}\nOrder Type: {_selectedOrderType}");
             
             // Clear cart
             _cart.Clear();

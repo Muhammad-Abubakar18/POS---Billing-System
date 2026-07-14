@@ -18,6 +18,7 @@ public class Sale
     public decimal PaidAmount { get; set; }
     public decimal ChangeAmount { get; set; }
     public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Cash;
+    public OrderType OrderType { get; set; } = OrderType.DineIn;
     public SaleStatus Status { get; set; } = SaleStatus.Completed;
     public string? Notes { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
