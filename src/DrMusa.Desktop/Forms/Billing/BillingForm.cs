@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using DrMusa.Business.DTOs;
 using DrMusa.Business.Interfaces;
 using DrMusa.Common.Enums;
@@ -36,7 +37,7 @@ public partial class BillingForm : Form
     private List<CategoryDto> _categories = new();
     private List<ProductDto> _allProducts = new();
     private int? _selectedCategoryId = null;
-    private List<CartItem> _cart = new();
+    private BindingList<CartItem> _cart = new();
     private PaymentMethod _selectedPayment = PaymentMethod.Cash;
 
     public BillingForm(IServiceProvider serviceProvider)
@@ -92,8 +93,8 @@ public partial class BillingForm : Form
         _txtBarcode = new TextBox { Width = 200, PlaceholderText = "||| Scan barcode", Font = new Font("Segoe UI", 12f), Location = new Point(320, 0) };
         _txtBarcode.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { ProcessBarcode(_txtBarcode.Text); _txtBarcode.Clear(); e.SuppressKeyPress = true; } };
 
-        topBar.Controls.Add(AppTheme.WrapInputPanel(_txtSearch, "Search"));
-        var pnlBc = AppTheme.WrapInputPanel(_txtBarcode, "Barcode");
+        topBar.Controls.Add(AppTheme.WrapInputPanel(_txtSearch));
+        var pnlBc = AppTheme.WrapInputPanel(_txtBarcode);
         pnlBc.Left = 320;
         topBar.Controls.Add(pnlBc);
 
@@ -129,15 +130,18 @@ public partial class BillingForm : Form
             AllowUserToAddRows = false,
             AllowUserToDeleteRows = false,
             RowHeadersVisible = false,
-            SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            SelectionMode = DataGridViewSelectionMode.CellSelect,
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
             EnableHeadersVisualStyles = false,
             GridColor = AppTheme.BorderDefault,
             DefaultCellStyle = new DataGridViewCellStyle { BackColor = AppTheme.BackgroundPanel, ForeColor = AppTheme.TextPrimary, SelectionBackColor = AppTheme.AccentPrimary },
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle { BackColor = AppTheme.BackgroundDark, ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 9f, FontStyle.Bold) },
-            RowTemplate = { Height = 40 }
+            RowTemplate = { Height = 40 },
+            EditMode = DataGridViewEditMode.EditOnEnter
         };
         _gridCart.CellClick += GridCart_CellClick;
+        _gridCart.CellValueChanged += GridCart_CellValueChanged;
+        _gridCart.DataError += (s, e) => { e.Cancel = true; };
 
         var pnlCheckout = new Panel { Dock = DockStyle.Bottom, Height = 320, Padding = new Padding(0, 10, 0, 0) };
         
@@ -241,9 +245,7 @@ public partial class BillingForm : Form
         _pnlProducts.SuspendLayout();
         _pnlProducts.Controls.Clear();
 
-        var searchTerm = _txtSearch.Text.Trim();
-        if (searchTerm == "🔍 Search products...") searchTerm = "";
-        searchTerm = searchTerm.ToLower();
+        var searchTerm = _txtSearch.Text.Trim().ToLower();
 
         var filtered = _allProducts.Where(p => 
             (!_selectedCategoryId.HasValue || p.CategoryId == _selectedCategoryId) &&
@@ -260,18 +262,7 @@ public partial class BillingForm : Form
         _pnlProducts.ResumeLayout();
     }
 
-    private void ProcessBarcode(string barcode)
-    {
-        var product = _allProducts.FirstOrDefault(p => p.Barcode == barcode);
-        if (product != null)
-        {
-            AddToCart(product);
-        }
-        else
-        {
-            UIHelper.ShowWarning($"Product with barcode '{barcode}' not found.");
-        }
-    }
+
 
     private void AddToCart(ProductDto product)
     {
@@ -279,54 +270,134 @@ public partial class BillingForm : Form
         if (existing != null)
         {
             existing.Quantity++;
+            int index = _cart.IndexOf(existing);
+            _cart.ResetItem(index);
         }
         else
         {
-            _cart.Add(new CartItem { ProductId = product.Id, ProductName = product.Name, UnitPrice = product.SellingPrice, Quantity = 1 });
+            _cart.Add(new CartItem { ProductId = product.Id, ProductName = product.Name, Quantity = 1, UnitPrice = product.SellingPrice });
         }
-        UpdateCartGrid();
+
+        CalculateTotals();
+    }
+
+    private void ProcessBarcode(string barcode)
+    {
+        if (string.IsNullOrWhiteSpace(barcode)) return;
+        var p = _allProducts.FirstOrDefault(x => string.Equals(x.Barcode, barcode, StringComparison.OrdinalIgnoreCase));
+        if (p != null) AddToCart(p);
+        else UIHelper.ShowError("Product not found for barcode: " + barcode);
     }
 
     private void UpdateCartGrid()
     {
-        _gridCart.DataSource = null;
-        _gridCart.DataSource = _cart;
-
-        if (_gridCart.Columns["ProductId"] != null) _gridCart.Columns["ProductId"].Visible = false;
-        
-        if (_gridCart.Columns["ProductName"] != null)
-            _gridCart.Columns["ProductName"].HeaderText = "Item";
-
-        if (_gridCart.Columns["UnitPrice"] != null)
-            _gridCart.Columns["UnitPrice"].DefaultCellStyle.Format = "C2";
-
-        if (_gridCart.Columns["Total"] != null)
-            _gridCart.Columns["Total"].DefaultCellStyle.Format = "C2";
-
-        if (_gridCart.Columns["RemoveBtn"] == null)
+        if (_gridCart.DataSource == null)
         {
-            _gridCart.Columns.Add(new DataGridViewButtonColumn
+            _gridCart.DataSource = _cart;
+
+            if (_gridCart.Columns["ProductId"] != null) _gridCart.Columns["ProductId"].Visible = false;
+            if (_gridCart.Columns["UnitPrice"] != null) _gridCart.Columns["UnitPrice"].Visible = false; // Hide unit price to save space
+
+            if (_gridCart.Columns["ProductName"] != null) 
             {
-                Name = "RemoveBtn",
-                HeaderText = "",
-                Text = "X",
-                UseColumnTextForButtonValue = true,
-                Width = 40,
-                FlatStyle = FlatStyle.Flat
-            });
+                _gridCart.Columns["ProductName"].ReadOnly = true;
+                _gridCart.Columns["ProductName"].HeaderText = "Item";
+                _gridCart.Columns["ProductName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            if (_gridCart.Columns["MinusBtn"] == null)
+            {
+                _gridCart.Columns.Add(new DataGridViewButtonColumn { Name = "MinusBtn", HeaderText = "", Text = "-", UseColumnTextForButtonValue = true, Width = 30, FlatStyle = FlatStyle.Flat });
+                _gridCart.Columns["MinusBtn"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            if (_gridCart.Columns["Quantity"] != null)
+            {
+                _gridCart.Columns["Quantity"].ReadOnly = false;
+                _gridCart.Columns["Quantity"].Width = 40;
+                _gridCart.Columns["Quantity"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                _gridCart.Columns["Quantity"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            if (_gridCart.Columns["PlusBtn"] == null)
+            {
+                _gridCart.Columns.Add(new DataGridViewButtonColumn { Name = "PlusBtn", HeaderText = "", Text = "+", UseColumnTextForButtonValue = true, Width = 30, FlatStyle = FlatStyle.Flat });
+                _gridCart.Columns["PlusBtn"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            if (_gridCart.Columns["Total"] != null)
+            {
+                _gridCart.Columns["Total"].ReadOnly = true;
+                _gridCart.Columns["Total"].DefaultCellStyle.Format = "C2";
+                _gridCart.Columns["Total"].Width = 80;
+                _gridCart.Columns["Total"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            if (_gridCart.Columns["RemoveBtn"] == null)
+            {
+                _gridCart.Columns.Add(new DataGridViewButtonColumn { Name = "RemoveBtn", HeaderText = "", Text = "X", UseColumnTextForButtonValue = true, Width = 35, FlatStyle = FlatStyle.Flat });
+                _gridCart.Columns["RemoveBtn"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+            
+            // Reorder columns
+            _gridCart.Columns["ProductName"].DisplayIndex = 0;
+            _gridCart.Columns["MinusBtn"].DisplayIndex = 1;
+            _gridCart.Columns["Quantity"].DisplayIndex = 2;
+            _gridCart.Columns["PlusBtn"].DisplayIndex = 3;
+            _gridCart.Columns["Total"].DisplayIndex = 4;
+            _gridCart.Columns["RemoveBtn"].DisplayIndex = 5;
         }
 
         CalculateTotals();
+    }
+
+    private void GridCart_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex < 0 || _isInitializing) return;
+        
+        if (_gridCart.Columns[e.ColumnIndex].Name == "Quantity")
+        {
+            var cartItem = _cart[e.RowIndex];
+            if (cartItem.Quantity <= 0)
+            {
+                _cart.RemoveAt(e.RowIndex);
+                BeginInvoke(new Action(UpdateCartGrid));
+            }
+            else
+            {
+                _gridCart.InvalidateRow(e.RowIndex); // Force Total refresh
+                BeginInvoke(new Action(CalculateTotals));
+            }
+        }
     }
 
     private void GridCart_CellClick(object? sender, DataGridViewCellEventArgs e)
     {
         if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
-        if (_gridCart.Columns[e.ColumnIndex].Name == "RemoveBtn")
+        string colName = _gridCart.Columns[e.ColumnIndex].Name;
+        var cartItem = _cart[e.RowIndex];
+
+        if (colName == "RemoveBtn")
         {
             _cart.RemoveAt(e.RowIndex);
-            UpdateCartGrid();
+            BeginInvoke(new Action(CalculateTotals));
+        }
+        else if (colName == "MinusBtn")
+        {
+            cartItem.Quantity--;
+            if (cartItem.Quantity <= 0)
+                _cart.RemoveAt(e.RowIndex);
+            else
+                _cart.ResetItem(e.RowIndex);
+                
+            BeginInvoke(new Action(CalculateTotals));
+        }
+        else if (colName == "PlusBtn")
+        {
+            cartItem.Quantity++;
+            _cart.ResetItem(e.RowIndex);
+            BeginInvoke(new Action(CalculateTotals));
         }
     }
 
