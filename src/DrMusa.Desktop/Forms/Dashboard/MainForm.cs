@@ -3,6 +3,7 @@ using DrMusa.Desktop.Helpers;
 using DrMusa.Desktop.Forms.Login;
 using DrMusa.Desktop.Forms.Products;
 using DrMusa.Desktop.Forms.Categories;
+using DrMusa.Desktop.Forms.Reports;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DrMusa.Desktop.Forms.Dashboard;
@@ -200,6 +201,7 @@ public partial class MainForm : Form
         
         var btnCustomers = CreateSidebarButton("👥  Customers");
         var btnReports = CreateSidebarButton("📈  Reports");
+        btnReports.Click += (s, e) => OpenReportsModule();
 
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
         _sideBar.Controls.AddRange(new Control[] { btnReports, btnCustomers, btnProducts, btnCategories, btnBilling, btnDashboard });
@@ -259,6 +261,23 @@ public partial class MainForm : Form
         var dashCtrl = new DashboardControl(_saleService);
         LoadContent(dashCtrl);
         await dashCtrl.LoadDataAsync();
+    }
+
+    private void OpenReportsModule()
+    {
+        try
+        {
+            var reportsForm = new ReportsForm(_serviceProvider)
+            {
+                TopLevel = false,
+                FormBorderStyle = FormBorderStyle.None
+            };
+            LoadContent(reportsForm);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to open Reports module: {ex.Message}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void OpenBillingModule()

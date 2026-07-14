@@ -25,7 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISaleRepository, SaleRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+        services.AddScoped<ISupplierRepository, SupplierRepository>();
         // Business Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
@@ -33,7 +33,8 @@ public static class DependencyInjection
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<ISettingService, SettingService>();
         services.AddScoped<ICategoryService, CategoryService>();
-
+        services.AddScoped<ISupplierService, SupplierService>();
+        services.AddScoped<IReportService, ReportService>();
         return services;
     }
 }
