@@ -63,8 +63,8 @@ internal static class Program
                 {
                     File.Copy(dbFullPath, todayBackupPath, true);
                     
-                    // Cleanup backups older than 7 days
-                    var oldBackups = Directory.GetFiles(backupDir, "DrMusa_Backup_*.db")
+                    // Cleanup backups older than 7 days (both auto and manual)
+                    var oldBackups = Directory.GetFiles(backupDir, "DrMusa_*Backup*.db")
                         .Select(f => new FileInfo(f))
                         .Where(f => f.CreationTime < DateTime.Now.AddDays(-7));
                     foreach (var old in oldBackups) { try { old.Delete(); } catch { } }

@@ -44,7 +44,7 @@ public class PasswordRecoveryForm : Form
     private void InitializeComponent()
     {
         this.Text = "DrMusa — Password Recovery";
-        this.Size = new Size(500, 550);
+        this.Size = new Size(550, 650);
         this.StartPosition = FormStartPosition.CenterParent;
         this.BackColor = AppTheme.BackgroundPanel;
         this.Font = AppTheme.FontBody;
@@ -52,28 +52,28 @@ public class PasswordRecoveryForm : Form
         this.MaximizeBox = false;
         this.MinimizeBox = false;
 
-        var lblTitle = new Label { Text = $"Recover password for: {_username}", Font = AppTheme.FontTitle, ForeColor = AppTheme.TextPrimary, AutoSize = true, Location = new Point(20, 20) };
+        var lblTitle = new Label { Text = $"Recover password for: {_username}", Font = new Font("Segoe UI", 16f, FontStyle.Bold), ForeColor = AppTheme.TextPrimary, AutoSize = true, Location = new Point(20, 20) };
         this.Controls.Add(lblTitle);
 
-        _tabControl = new TabControl { Location = new Point(20, 70), Size = new Size(440, 250), Font = new Font("Segoe UI", 10f) };
+        _tabControl = new TabControl { Location = new Point(20, 70), Size = new Size(490, 350), Font = new Font("Segoe UI", 10f) };
         
         // Tab 1: Security Questions
         var tabQuestions = new TabPage("Security Questions");
         tabQuestions.BackColor = AppTheme.BackgroundCard;
 
-        _txtA1 = new TextBox { Width = 400, Location = new Point(10, 40) };
-        _txtA2 = new TextBox { Width = 400, Location = new Point(10, 100) };
-        _txtA3 = new TextBox { Width = 400, Location = new Point(10, 160) };
+        _txtA1 = new TextBox { Width = 450, Location = new Point(15, 45) };
+        _txtA2 = new TextBox { Width = 450, Location = new Point(15, 115) };
+        _txtA3 = new TextBox { Width = 450, Location = new Point(15, 185) };
 
-        var lblQ1 = new Label { Name = "lblQ1", Text = "Question 1...", Location = new Point(10, 20), AutoSize = true, ForeColor = AppTheme.TextPrimary };
-        var lblQ2 = new Label { Name = "lblQ2", Text = "Question 2...", Location = new Point(10, 80), AutoSize = true, ForeColor = AppTheme.TextPrimary };
-        var lblQ3 = new Label { Name = "lblQ3", Text = "Question 3...", Location = new Point(10, 140), AutoSize = true, ForeColor = AppTheme.TextPrimary };
+        var lblQ1 = new Label { Name = "lblQ1", Text = "Question 1...", Location = new Point(15, 20), AutoSize = true, ForeColor = AppTheme.TextPrimary };
+        var lblQ2 = new Label { Name = "lblQ2", Text = "Question 2...", Location = new Point(15, 90), AutoSize = true, ForeColor = AppTheme.TextPrimary };
+        var lblQ3 = new Label { Name = "lblQ3", Text = "Question 3...", Location = new Point(15, 160), AutoSize = true, ForeColor = AppTheme.TextPrimary };
 
         tabQuestions.Controls.Add(lblQ1); tabQuestions.Controls.Add(_txtA1);
         tabQuestions.Controls.Add(lblQ2); tabQuestions.Controls.Add(_txtA2);
         tabQuestions.Controls.Add(lblQ3); tabQuestions.Controls.Add(_txtA3);
 
-        var btnSubmitQuestions = new Button { Text = "Verify Answers", Width = 150, Height = 35, Location = new Point(10, 200) };
+        var btnSubmitQuestions = new Button { Text = "Verify Answers", Width = 150, Height = 40, Location = new Point(15, 240) };
         AppTheme.StylePrimaryButton(btnSubmitQuestions);
         btnSubmitQuestions.Click += async (s, e) => await VerifyQuestionsAsync();
         tabQuestions.Controls.Add(btnSubmitQuestions);
@@ -84,10 +84,10 @@ public class PasswordRecoveryForm : Form
         var tabKey = new TabPage("Master Key");
         tabKey.BackColor = AppTheme.BackgroundCard;
 
-        var lblKey = new Label { Text = "Enter your Master Recovery Key:", Location = new Point(10, 20), AutoSize = true, ForeColor = AppTheme.TextPrimary };
-        _txtMasterKey = new TextBox { Width = 400, Location = new Point(10, 50), Font = new Font("Segoe UI", 12f, FontStyle.Bold) };
+        var lblKey = new Label { Text = "Enter your Master Recovery Key:", Location = new Point(15, 20), AutoSize = true, ForeColor = AppTheme.TextPrimary };
+        _txtMasterKey = new TextBox { Width = 450, Location = new Point(15, 50), Font = new Font("Consolas", 14f, FontStyle.Bold), TextAlign = HorizontalAlignment.Center };
         
-        var btnSubmitKey = new Button { Text = "Verify Key", Width = 150, Height = 35, Location = new Point(10, 90) };
+        var btnSubmitKey = new Button { Text = "Verify Key", Width = 150, Height = 40, Location = new Point(15, 100) };
         AppTheme.StylePrimaryButton(btnSubmitKey);
         btnSubmitKey.Click += async (s, e) => await VerifyMasterKeyAsync();
 
@@ -99,11 +99,11 @@ public class PasswordRecoveryForm : Form
         this.Controls.Add(_tabControl);
 
         // Reset Panel (Hidden initially)
-        _pnlReset = new Panel { Location = new Point(20, 330), Size = new Size(440, 150), Visible = false };
+        _pnlReset = new Panel { Location = new Point(20, 440), Size = new Size(490, 150), Visible = false };
         var lblNewPass = new Label { Text = "Enter New Password:", Location = new Point(0, 0), AutoSize = true, ForeColor = AppTheme.TextPrimary, Font = AppTheme.FontTitle };
-        _txtNewPassword = new TextBox { Width = 300, Location = new Point(0, 30), Font = new Font("Segoe UI", 11f), PasswordChar = '●' };
+        _txtNewPassword = new TextBox { Width = 350, Location = new Point(0, 40), Font = new Font("Segoe UI", 11f), PasswordChar = '●' };
         
-        var btnReset = new Button { Text = "Reset Password", Width = 150, Height = 40, Location = new Point(0, 70) };
+        var btnReset = new Button { Text = "Reset Password", Width = 160, Height = 40, Location = new Point(0, 85) };
         AppTheme.StyleDangerButton(btnReset);
         btnReset.Click += async (s, e) => await PerformResetAsync();
 

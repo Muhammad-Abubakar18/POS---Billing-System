@@ -150,6 +150,38 @@ public class SaleService : ISaleService
         return true;
     }
 
+    public async Task DeleteSalesAsync(DateTime fromDate, DateTime toDate, bool restoreStock)
+    {
+        var sales = await _context.Sales
+            .Include(s => s.SaleItems)
+            .Where(s => s.SaleDate >= fromDate && s.SaleDate < toDate)
+            .ToListAsync();
+
+        if (!sales.Any()) return;
+
+        if (restoreStock)
+        {
+            foreach (var sale in sales)
+            {
+                if (sale.Status != SaleStatus.Cancelled)
+                {
+                    foreach (var item in sale.SaleItems)
+                    {
+                        var product = await _productRepo.GetByIdAsync(item.ProductId);
+                        if (product != null)
+                        {
+                            product.CurrentStock += item.Quantity;
+                            await _productRepo.UpdateAsync(product);
+                        }
+                    }
+                }
+            }
+        }
+
+        _context.Sales.RemoveRange(sales);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<DashboardDto> GetDashboardDataAsync()
     {
         var today = DateTime.Today;

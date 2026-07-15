@@ -32,8 +32,8 @@ public sealed class CategoryEditForm : Form
     {
         Text = _categoryId.HasValue ? "DrMusa — Edit Category" : "DrMusa — Add Category";
         StartPosition = FormStartPosition.CenterParent;
-        Size = new Size(520, 420);
-        MinimumSize = new Size(480, 380);
+        Size = new Size(520, 480);
+        MinimumSize = new Size(520, 480);
         BackColor = AppTheme.BackgroundDark;
         ForeColor = AppTheme.TextPrimary;
         Font = AppTheme.FontBody;
@@ -99,6 +99,7 @@ public sealed class CategoryEditForm : Form
         _btnCancel = new Button { Text = "Cancel", Width = 110 };
         AppTheme.StyleSecondaryButton(_btnCancel);
         _btnCancel.Height = 44;
+        _btnCancel.Margin = new Padding(0, 0, 12, 0); // Spacing between buttons
         _btnCancel.Click += (_, __) => DialogResult = DialogResult.Cancel;
 
         _btnSave = new Button { Text = _categoryId.HasValue ? "Save Changes" : "Add Category", Width = 140 };

@@ -51,6 +51,8 @@ public partial class SettingsForm : Form
         this.Text = "DrMusa — Settings";
         this.BackColor = AppTheme.BackgroundDark;
         this.Font = AppTheme.FontBody;
+        this.Size = new Size(1000, 750);
+        this.StartPosition = FormStartPosition.CenterParent;
 
         var mainPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20) };
         this.Controls.Add(mainPanel);
@@ -61,7 +63,7 @@ public partial class SettingsForm : Form
         var tabs = new TabControl
         {
             Location = new Point(20, 70),
-            Size = new Size(800, 500),
+            Size = new Size(920, 520),
             Font = new Font("Segoe UI", 11f)
         };
         mainPanel.Controls.Add(tabs);
@@ -172,16 +174,17 @@ public partial class SettingsForm : Form
             Font = new Font("Segoe UI", 11f),
             ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
+            MaximumSize = new Size(880, 0),
             Location = new Point(20, 20)
         };
         tabDb.Controls.Add(lblDbInfo);
 
-        var btnBackup = new Button { Text = "Manual Backup", Width = 200, Height = 45, Location = new Point(20, 60) };
+        var btnBackup = new Button { Text = "Manual Backup", Width = 200, Height = 45, Location = new Point(20, 75) };
         AppTheme.StyleSecondaryButton(btnBackup);
         btnBackup.Click += BtnBackup_Click;
         tabDb.Controls.Add(btnBackup);
 
-        var btnRestore = new Button { Text = "Restore Database", Width = 200, Height = 45, Location = new Point(240, 60) };
+        var btnRestore = new Button { Text = "Restore Database", Width = 200, Height = 45, Location = new Point(240, 75) };
         AppTheme.StyleDangerButton(btnRestore);
         btnRestore.Click += BtnRestore_Click;
         tabDb.Controls.Add(btnRestore);
@@ -194,14 +197,15 @@ public partial class SettingsForm : Form
             Font = new Font("Segoe UI", 11f),
             ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
-            Location = new Point(20, 120)
+            MaximumSize = new Size(880, 0),
+            Location = new Point(20, 135)
         };
         tabDb.Controls.Add(lblAutoBackup);
 
-        _txtAutoBackupDir = new TextBox { Width = 400, Font = new Font("Segoe UI", 11f), Location = new Point(20, 150), ReadOnly = true };
+        _txtAutoBackupDir = new TextBox { Width = 400, Font = new Font("Segoe UI", 11f), Location = new Point(20, 165), ReadOnly = true };
         tabDb.Controls.Add(_txtAutoBackupDir);
 
-        var btnBrowseAutoBackup = new Button { Text = "Browse...", Width = 100, Height = 30, Location = new Point(430, 149) };
+        var btnBrowseAutoBackup = new Button { Text = "Browse...", Width = 100, Height = 30, Location = new Point(430, 164) };
         AppTheme.StyleSecondaryButton(btnBrowseAutoBackup);
         btnBrowseAutoBackup.Click += (s, e) =>
         {
@@ -213,7 +217,7 @@ public partial class SettingsForm : Form
         };
         tabDb.Controls.Add(btnBrowseAutoBackup);
 
-        var btnClearAutoBackup = new Button { Text = "Clear", Width = 80, Height = 30, Location = new Point(540, 149) };
+        var btnClearAutoBackup = new Button { Text = "Clear", Width = 80, Height = 30, Location = new Point(540, 164) };
         AppTheme.StyleDangerButton(btnClearAutoBackup);
         btnClearAutoBackup.Click += (s, e) => _txtAutoBackupDir.Text = "";
         tabDb.Controls.Add(btnClearAutoBackup);
@@ -228,6 +232,7 @@ public partial class SettingsForm : Form
             Font = new Font("Segoe UI", 11f),
             ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
+            MaximumSize = new Size(880, 0),
             Location = new Point(20, 20)
         };
         tabSecurity.Controls.Add(lblSecInfo);
@@ -241,41 +246,42 @@ public partial class SettingsForm : Form
             "What is your favorite childhood friend's name?"
         };
 
-        _cmbQ1 = new ComboBox { Width = 300, Location = new Point(20, 70), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ1 = new ComboBox { Width = 380, Location = new Point(20, 85), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
         _cmbQ1.Items.AddRange(questions);
-        _txtA1 = new TextBox { Width = 300, Location = new Point(340, 70), Font = new Font("Segoe UI", 11f) };
+        _txtA1 = new TextBox { Width = 380, Location = new Point(440, 85), Font = new Font("Segoe UI", 11f) };
 
-        _cmbQ2 = new ComboBox { Width = 300, Location = new Point(20, 120), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ2 = new ComboBox { Width = 380, Location = new Point(20, 165), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
         _cmbQ2.Items.AddRange(questions);
-        _txtA2 = new TextBox { Width = 300, Location = new Point(340, 120), Font = new Font("Segoe UI", 11f) };
+        _txtA2 = new TextBox { Width = 380, Location = new Point(440, 165), Font = new Font("Segoe UI", 11f) };
 
-        _cmbQ3 = new ComboBox { Width = 300, Location = new Point(20, 170), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ3 = new ComboBox { Width = 380, Location = new Point(20, 245), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
         _cmbQ3.Items.AddRange(questions);
-        _txtA3 = new TextBox { Width = 300, Location = new Point(340, 170), Font = new Font("Segoe UI", 11f) };
+        _txtA3 = new TextBox { Width = 380, Location = new Point(440, 245), Font = new Font("Segoe UI", 11f) };
 
-        tabSecurity.Controls.Add(new Label { Text = "Question 1:", Location = new Point(20, 50), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Question 1:", Location = new Point(20, 60), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_cmbQ1);
-        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 50), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(440, 60), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_txtA1);
 
-        tabSecurity.Controls.Add(new Label { Text = "Question 2:", Location = new Point(20, 100), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Question 2:", Location = new Point(20, 140), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_cmbQ2);
-        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 100), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(440, 140), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_txtA2);
 
-        tabSecurity.Controls.Add(new Label { Text = "Question 3:", Location = new Point(20, 150), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Question 3:", Location = new Point(20, 220), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_cmbQ3);
-        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 150), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(440, 220), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) });
         tabSecurity.Controls.Add(_txtA3);
 
-        var lblMasterKey = new Label { Text = "Master Recovery Key (Write this down!):", Location = new Point(20, 240), ForeColor = AppTheme.TextPrimary, AutoSize = true };
+        var lblMasterKey = new Label { Text = "Master Recovery Key (Type your own or click Generate):", Location = new Point(20, 310), ForeColor = AppTheme.TextPrimary, AutoSize = true, Font = new Font("Segoe UI", 10f) };
         tabSecurity.Controls.Add(lblMasterKey);
 
-        _txtMasterKey = new TextBox { Width = 300, Location = new Point(20, 260), Font = new Font("Segoe UI", 11.5f, FontStyle.Bold), ReadOnly = true };
+        _txtMasterKey = new TextBox { Width = 380, Location = new Point(20, 335), Font = new Font("Consolas", 14f, FontStyle.Bold), ReadOnly = false, TextAlign = HorizontalAlignment.Center };
         tabSecurity.Controls.Add(_txtMasterKey);
 
-        var btnGenerateKey = new Button { Text = "Generate New Key", Width = 150, Height = 32, Location = new Point(340, 259) };
+        var btnGenerateKey = new Button { Text = "Generate Random Key", Width = 200, Height = 34, Location = new Point(440, 334) };
         AppTheme.StyleDangerButton(btnGenerateKey);
+        btnGenerateKey.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
         btnGenerateKey.Click += (s, e) =>
         {
             var confirm = MessageBox.Show("Generating a new key will invalidate any old key. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -288,6 +294,33 @@ public partial class SettingsForm : Form
 
         tabs.TabPages.Add(tabSecurity);
 
+        // --- Tab: Data Management ---
+        var tabData = new TabPage("Data Management");
+        tabData.BackColor = AppTheme.BackgroundPanel;
+
+        var lblDataInfo = new Label
+        {
+            Text = "DANGER ZONE: Wiping sales will permanently delete revenue data and receipt history.",
+            Font = new Font("Segoe UI", 11f, FontStyle.Bold),
+            ForeColor = AppTheme.AccentDanger,
+            AutoSize = true,
+            MaximumSize = new Size(880, 0),
+            Location = new Point(20, 20)
+        };
+        tabData.Controls.Add(lblDataInfo);
+
+        var btnResetToday = new Button { Text = "Reset Today's Sales", Width = 200, Height = 45, Location = new Point(20, 85) };
+        AppTheme.StyleDangerButton(btnResetToday);
+        btnResetToday.Click += BtnResetToday_Click;
+        tabData.Controls.Add(btnResetToday);
+
+        var btnResetMonth = new Button { Text = "Reset This Month's Sales", Width = 220, Height = 45, Location = new Point(240, 85) };
+        AppTheme.StyleDangerButton(btnResetMonth);
+        btnResetMonth.Click += BtnResetMonth_Click;
+        tabData.Controls.Add(btnResetMonth);
+
+        tabs.TabPages.Add(tabData);
+
         // Last Backup Label
         _lblLastBackup = new Label
         {
@@ -295,12 +328,12 @@ public partial class SettingsForm : Form
             Font = new Font("Segoe UI", 10f, FontStyle.Italic),
             ForeColor = AppTheme.TextSecondary,
             AutoSize = true,
-            Location = new Point(20, 185)
+            Location = new Point(20, 205)
         };
         tabDb.Controls.Add(_lblLastBackup);
 
         // --- Bottom Action ---
-        var btnSave = new Button { Text = "Save Settings", Width = 150, Height = 45, Location = new Point(20, 590) };
+        var btnSave = new Button { Text = "Save Settings", Width = 150, Height = 45, Location = new Point(20, 610) };
         AppTheme.StylePrimaryButton(btnSave);
         btnSave.Click += async (s, e) => await SaveSettingsAsync();
         mainPanel.Controls.Add(btnSave);
@@ -337,6 +370,50 @@ public partial class SettingsForm : Form
         }
 
         RefreshLastBackupTime();
+    }
+
+
+    private async void BtnResetToday_Click(object? sender, EventArgs e)
+    {
+        using var authForm = new DrMusa.Desktop.Forms.Login.AdminAuthForm(_serviceProvider);
+        if (authForm.ShowDialog() != DialogResult.OK) return;
+
+        var confirm = MessageBox.Show("Are you ABSOLUTELY sure you want to delete all sales recorded today? This action cannot be undone.", "Delete Today's Sales", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+        if (confirm != DialogResult.Yes) return;
+
+        try
+        {
+            var saleService = _serviceProvider.GetRequiredService<ISaleService>();
+            var today = DateTime.Today;
+            await saleService.DeleteSalesAsync(today, today.AddDays(1), restoreStock: true);
+            MessageBox.Show("Today's sales have been successfully deleted. Stock has been restored.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error deleting sales: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnResetMonth_Click(object? sender, EventArgs e)
+    {
+        using var authForm = new DrMusa.Desktop.Forms.Login.AdminAuthForm(_serviceProvider);
+        if (authForm.ShowDialog() != DialogResult.OK) return;
+
+        var confirm = MessageBox.Show("Are you ABSOLUTELY sure you want to delete all sales recorded this month? This action cannot be undone.", "Delete Monthly Sales", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+        if (confirm != DialogResult.Yes) return;
+
+        try
+        {
+            var saleService = _serviceProvider.GetRequiredService<ISaleService>();
+            var today = DateTime.Today;
+            var monthStart = new DateTime(today.Year, today.Month, 1);
+            await saleService.DeleteSalesAsync(monthStart, today.AddDays(1), restoreStock: true);
+            MessageBox.Show("This month's sales have been successfully deleted. Stock has been restored.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error deleting sales: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 
     private void RefreshLastBackupTime()
@@ -469,6 +546,17 @@ public partial class SettingsForm : Form
             {
                 string targetPath = Path.Combine(_txtAutoBackupDir.Text, $"DrMusa_ManualBackup_{DateTime.Now:yyyyMMdd_HHmmss}.db");
                 File.Copy(dbPath, targetPath, overwrite: true);
+
+                // Cleanup backups older than 7 days (Rolling Backup)
+                try
+                {
+                    var oldBackups = Directory.GetFiles(_txtAutoBackupDir.Text, "DrMusa_*Backup*.db")
+                        .Select(f => new FileInfo(f))
+                        .Where(f => f.CreationTime < DateTime.Now.AddDays(-7));
+                    foreach (var old in oldBackups) { try { old.Delete(); } catch { } }
+                }
+                catch { }
+
                 UIHelper.ShowSuccess($"Instant Backup Complete!\nSaved directly to your Automatic Backup Directory:\n{targetPath}");
                 RefreshLastBackupTime();
                 return;
@@ -515,6 +603,25 @@ public partial class SettingsForm : Form
             Filter = "SQLite Database|*.db",
             Title = "Select Database Backup to Restore"
         };
+
+        // Smart select latest backup
+        if (!string.IsNullOrWhiteSpace(_txtAutoBackupDir.Text) && Directory.Exists(_txtAutoBackupDir.Text))
+        {
+            dlg.InitialDirectory = _txtAutoBackupDir.Text;
+            try
+            {
+                var latestBackup = Directory.GetFiles(_txtAutoBackupDir.Text, "DrMusa_*Backup*.db")
+                    .Select(f => new FileInfo(f))
+                    .OrderByDescending(f => f.CreationTime)
+                    .FirstOrDefault();
+                
+                if (latestBackup != null)
+                {
+                    dlg.FileName = latestBackup.Name;
+                }
+            }
+            catch { }
+        }
 
         if (dlg.ShowDialog() == DialogResult.OK)
         {

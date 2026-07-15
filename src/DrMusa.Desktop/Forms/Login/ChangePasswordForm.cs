@@ -35,7 +35,7 @@ public sealed class ChangePasswordForm : Form
     private void BuildUI()
     {
         Text            = "Change Password";
-        Size            = new Size(480, 540);
+        Size            = new Size(500, 600);
         StartPosition   = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox     = false;
@@ -56,8 +56,8 @@ public sealed class ChangePasswordForm : Form
         // ── Card panel ────────────────────────────────────────────────────────
         var card = new Panel
         {
-            Size      = new Size(420, 460),
-            Location  = new Point(30, 30),
+            Size      = new Size(440, 520),
+            Location  = new Point(22, 20),
             BackColor = AppTheme.BackgroundPanel
         };
         card.Paint += (s, e) =>
@@ -74,7 +74,7 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.AccentPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(30, 25)
+            Location  = new Point(20, 25)
         };
 
         var lblTitle = new Label
@@ -84,7 +84,7 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(72, 30)
+            Location  = new Point(120, 25)
         };
 
         var lblSub = new Label
@@ -94,13 +94,13 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(72, 62)
+            Location  = new Point(120, 60)
         };
 
         var sep = new Panel
         {
             BackColor = AppTheme.BorderDefault,
-            Size      = new Size(360, 1),
+            Size      = new Size(380, 1),
             Location  = new Point(30, 96)
         };
 
@@ -112,12 +112,12 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(30, 116)
+            Location  = new Point(30, 120)
         };
         _txtCurrent = new TextBox { PasswordChar = '●', TabIndex = 0 };
         var pnlCurrent = AppTheme.WrapInputPanel(_txtCurrent, "");
-        pnlCurrent.Size     = new Size(360, 44);
-        pnlCurrent.Location = new Point(30, 136);
+        pnlCurrent.Size     = new Size(380, 44);
+        pnlCurrent.Location = new Point(30, 140);
 
         // ── New Password ──────────────────────────────────────────────────────
         var lblNew = new Label
@@ -127,25 +127,25 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(30, 198)
+            Location  = new Point(30, 205)
         };
         _txtNew = new TextBox { PasswordChar = '●', TabIndex = 1 };
         var pnlNew = AppTheme.WrapInputPanel(_txtNew, "");
-        pnlNew.Size     = new Size(360, 44);
-        pnlNew.Location = new Point(30, 218);
+        pnlNew.Size     = new Size(380, 44);
+        pnlNew.Location = new Point(30, 225);
 
         // Strength bar
         _pnlStrength = new Panel
         {
             Size      = new Size(0, 3),
-            Location  = new Point(30, 266),
+            Location  = new Point(30, 275),
             BackColor = AppTheme.AccentDanger
         };
 
         var pnlStrengthBg = new Panel
         {
-            Size      = new Size(360, 3),
-            Location  = new Point(30, 266),
+            Size      = new Size(380, 3),
+            Location  = new Point(30, 275),
             BackColor = AppTheme.BorderDefault
         };
         pnlStrengthBg.Controls.Add(_pnlStrength);
@@ -157,7 +157,7 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextMuted,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(30, 274)
+            Location  = new Point(30, 285)
         };
 
         _txtNew.TextChanged += TxtNew_TextChanged;
@@ -170,12 +170,12 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
-            Location  = new Point(30, 300)
+            Location  = new Point(30, 315)
         };
         _txtConfirm = new TextBox { PasswordChar = '●', TabIndex = 2 };
         var pnlConfirm = AppTheme.WrapInputPanel(_txtConfirm, "");
-        pnlConfirm.Size     = new Size(360, 44);
-        pnlConfirm.Location = new Point(30, 320);
+        pnlConfirm.Size     = new Size(380, 44);
+        pnlConfirm.Location = new Point(30, 335);
 
         // ── Error Label ───────────────────────────────────────────────────────
         _lblError = new Label
@@ -185,8 +185,8 @@ public sealed class ChangePasswordForm : Form
             ForeColor = AppTheme.AccentDanger,
             BackColor = Color.Transparent,
             AutoSize  = false,
-            Size      = new Size(360, 20),
-            Location  = new Point(30, 372),
+            Size      = new Size(380, 20),
+            Location  = new Point(30, 390),
             TextAlign = ContentAlignment.MiddleLeft
         };
 
@@ -194,8 +194,8 @@ public sealed class ChangePasswordForm : Form
         _btnSave = new Button
         {
             Text      = "Save Password",
-            Size      = new Size(175, 44),
-            Location  = new Point(30, 400),
+            Size      = new Size(185, 44),
+            Location  = new Point(30, 430),
             TabIndex  = 3
         };
         AppTheme.StylePrimaryButton(_btnSave);
@@ -204,8 +204,8 @@ public sealed class ChangePasswordForm : Form
         _btnCancel = new Button
         {
             Text      = "Cancel",
-            Size      = new Size(175, 44),
-            Location  = new Point(215, 400),
+            Size      = new Size(185, 44),
+            Location  = new Point(225, 430),
             TabIndex  = 4
         };
         AppTheme.StyleSecondaryButton(_btnCancel);

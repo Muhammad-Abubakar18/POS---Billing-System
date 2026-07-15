@@ -10,4 +10,5 @@ public interface ISaleService
     Task<IEnumerable<SaleDto>> GetByDateRangeAsync(DateTime from, DateTime to);
     Task<bool> CancelSaleAsync(int saleId);
     Task<DashboardDto> GetDashboardDataAsync();
+    Task DeleteSalesAsync(DateTime fromDate, DateTime toDate, bool restoreStock);
 }
