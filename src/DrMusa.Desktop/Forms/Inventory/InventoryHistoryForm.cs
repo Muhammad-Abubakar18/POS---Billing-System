@@ -63,7 +63,7 @@ public sealed class InventoryHistoryForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundPanel,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold
             },
             DefaultCellStyle = new DataGridViewCellStyle

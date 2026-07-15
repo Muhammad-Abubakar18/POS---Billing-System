@@ -97,7 +97,7 @@ public class ProductTileControl : UserControl
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleCenter,
             Font = new Font("Segoe UI", 24f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = AppTheme.BackgroundInput
         };
         lbl.Click += (s, e) => ProductClicked?.Invoke(this, _product);

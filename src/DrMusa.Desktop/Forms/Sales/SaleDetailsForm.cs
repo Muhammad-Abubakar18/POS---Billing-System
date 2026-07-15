@@ -30,7 +30,7 @@ public sealed class SaleDetailsForm : Form
         var lblTitle = new Label { Text = $"Invoice: {_sale.InvoiceNumber}", Font = AppTheme.FontTitle, AutoSize = true, Location = new Point(20, 20), ForeColor = AppTheme.TextPrimary };
         this.Controls.Add(lblTitle);
 
-        var lblDate = new Label { Text = $"Date: {_sale.SaleDate:yyyy-MM-dd HH:mm}", AutoSize = true, Location = new Point(20, 50), ForeColor = AppTheme.TextSecondary };
+        var lblDate = new Label { Text = $"Date: {_sale.SaleDate:yyyy-MM-dd HH:mm}", AutoSize = true, Location = new Point(20, 50), ForeColor = AppTheme.TextPrimary };
         this.Controls.Add(lblDate);
 
         var lblStatus = new Label { Text = $"Status: {_sale.Status}", AutoSize = true, Location = new Point(400, 50), ForeColor = _sale.Status == DrMusa.Common.Enums.SaleStatus.Cancelled ? Color.Red : Color.Green, Font = new Font(AppTheme.FontBody, FontStyle.Bold) };

@@ -122,18 +122,22 @@ public sealed class LoginForm : Form
             Font      = AppTheme.FontDisplay,
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(135, 228)
+            AutoSize  = false,
+            Size      = new Size(370, 50),
+            TextAlign = ContentAlignment.MiddleCenter,
+            Location  = new Point(0, 220)
         };
 
         _lblTagline = new Label
         {
             Text      = "Point of Sale System",
             Font      = new Font("Segoe UI", 10f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(118, 272)
+            AutoSize  = false,
+            Size      = new Size(370, 30),
+            TextAlign = ContentAlignment.MiddleCenter,
+            Location  = new Point(0, 268)
         };
 
         // Feature pills
@@ -144,7 +148,7 @@ public sealed class LoginForm : Form
             {
                 Text      = feature,
                 Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 BackColor = Color.Transparent,
                 AutoSize  = true,
                 Location  = new Point(110, pillY)
@@ -251,7 +255,7 @@ public sealed class LoginForm : Form
         {
             Text      = "Sign in to your account to continue",
             Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 68)
@@ -262,7 +266,7 @@ public sealed class LoginForm : Form
         {
             Text      = "USERNAME",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 110)
@@ -278,7 +282,7 @@ public sealed class LoginForm : Form
         {
             Text      = "PASSWORD",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 190)
@@ -294,12 +298,12 @@ public sealed class LoginForm : Form
         {
             Text      = "👁",
             Size      = new Size(36, 36),
-            Location  = new Point(286, 4),
+            Location  = new Point(280, 4),
             FlatStyle = FlatStyle.Flat,
-            BackColor = Color.Transparent,
-            ForeColor = AppTheme.TextMuted,
+            BackColor = AppTheme.BackgroundCard,
+            ForeColor = AppTheme.TextPrimary,
             Cursor    = Cursors.Hand,
-            Font      = new Font("Segoe UI", 9f),
+            Font      = new Font("Segoe UI Emoji", 11f),
             TabStop   = false
         };
         btnTogglePass.FlatAppearance.BorderSize = 0;
@@ -310,6 +314,7 @@ public sealed class LoginForm : Form
             btnTogglePass.ForeColor = _passwordVisible ? AppTheme.AccentPrimary : AppTheme.TextMuted;
         };
         _pnlPassword.Controls.Add(btnTogglePass);
+        btnTogglePass.BringToFront();
 
         // Error label
         _lblError = new Label
@@ -329,7 +334,7 @@ public sealed class LoginForm : Form
         {
             Text      = "Remember me",
             Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 286),

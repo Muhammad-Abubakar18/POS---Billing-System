@@ -67,7 +67,7 @@ public sealed class ProductEditForm : Form
         {
             Text = "Barcode, pricing, and category details for the product catalog.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(24, 50)
         };
@@ -171,7 +171,7 @@ public sealed class ProductEditForm : Form
         var label = new Label
         {
             Text = labelText,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(0, 0)
         };

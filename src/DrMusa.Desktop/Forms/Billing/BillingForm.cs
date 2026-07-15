@@ -70,13 +70,13 @@ public partial class BillingForm : Form
         this.Load += (s, e) =>
         {
             if (ClientSize.Width > 450)
-                mainSplit.SplitterDistance = ClientSize.Width - 450;
+                mainSplit.SplitterDistance = Math.Max(50, ClientSize.Width - 450);
         };
 
         this.SizeChanged += (s, e) =>
         {
             if (ClientSize.Width > 450)
-                mainSplit.SplitterDistance = ClientSize.Width - 450;
+                mainSplit.SplitterDistance = Math.Max(50, ClientSize.Width - 450);
         };
 
         var leftPanel = new Panel { Dock = DockStyle.Fill, BackColor = AppTheme.BackgroundDark, Padding = new Padding(20) };
@@ -136,7 +136,7 @@ public partial class BillingForm : Form
             EnableHeadersVisualStyles = false,
             GridColor = AppTheme.BorderDefault,
             DefaultCellStyle = new DataGridViewCellStyle { BackColor = AppTheme.BackgroundPanel, ForeColor = AppTheme.TextPrimary, SelectionBackColor = AppTheme.AccentPrimary },
-            ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle { BackColor = AppTheme.BackgroundDark, ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 9f, FontStyle.Bold) },
+            ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle { BackColor = AppTheme.BackgroundDark, ForeColor = AppTheme.TextPrimary, Font = new Font("Segoe UI", 9f, FontStyle.Bold) },
             RowTemplate = { Height = 40 },
             EditMode = DataGridViewEditMode.EditOnEnter
         };
@@ -154,12 +154,12 @@ public partial class BillingForm : Form
             Padding = new Padding(0, 10, 0, 0)
         };
 
-        _lblSubTotal = new Label { Text = "SubTotal: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Margin = new Padding(0, 0, 0, 10) };
+        _lblSubTotal = new Label { Text = "SubTotal: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextPrimary, AutoSize = true, Margin = new Padding(0, 0, 0, 10) };
 
         Panel CreateLabeledField(string labelText, Control inputPanel, int width)
         {
             var pnl = new Panel { Width = width, Height = 66, Margin = new Padding(0, 0, 5, 0) };
-            var lbl = new Label { Text = labelText, ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true };
+            var lbl = new Label { Text = labelText, ForeColor = AppTheme.TextPrimary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true };
             pnl.Controls.Add(lbl);
             inputPanel.Location = new Point(0, 20);
             inputPanel.Width = width;
@@ -187,7 +187,7 @@ public partial class BillingForm : Form
             _selectedOrderType = (OrderType)cmbOrderType.SelectedIndex;
         };
         var pnlOrderType = new Panel { Width = 120, Height = 60 };
-        pnlOrderType.Controls.Add(new Label { Text = "Order Type", ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true });
+        pnlOrderType.Controls.Add(new Label { Text = "Order Type", ForeColor = AppTheme.TextPrimary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true });
         pnlOrderType.Controls.Add(cmbOrderType);
 
         var row1 = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.LeftToRight, WrapContents = false, Margin = new Padding(0, 0, 0, 10) };
@@ -207,7 +207,7 @@ public partial class BillingForm : Form
         _txtPaidAmount.TextChanged += (s, e) => CalculateTotals();
         var pnlPaid = CreateLabeledField("Paid Amt", AppTheme.WrapInputPanel(_txtPaidAmount, ""), 90);
 
-        _lblChange = new Label { Text = "Change: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Padding = new Padding(0, 10, 0, 0) };
+        _lblChange = new Label { Text = "Change: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextPrimary, AutoSize = true, Padding = new Padding(0, 10, 0, 0) };
 
         var row2 = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.LeftToRight, WrapContents = true, Margin = new Padding(0, 0, 0, 10) };
         row2.Controls.AddRange(new Control[] { _btnCash, _btnCard, pnlPaid, _lblChange });

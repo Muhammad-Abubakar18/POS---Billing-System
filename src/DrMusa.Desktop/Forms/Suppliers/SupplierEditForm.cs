@@ -60,7 +60,7 @@ public sealed class SupplierEditForm : Form
         {
             Text = _existingSupplier == null ? "Enter details for the new supplier." : "Update existing supplier details.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 45)
         };
@@ -78,7 +78,7 @@ public sealed class SupplierEditForm : Form
         int spacing = 65;
 
         // Name
-        var lblName = new Label { Text = "Supplier Name *", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblName = new Label { Text = "Supplier Name *", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtName = new TextBox();
         var pnlName = AppTheme.WrapInputPanel(_txtName);
         pnlName.Location = new Point(30, startY + 25); pnlName.Width = 420;
@@ -87,7 +87,7 @@ public sealed class SupplierEditForm : Form
         startY += spacing;
 
         // Contact Person
-        var lblContactPerson = new Label { Text = "Contact Person", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblContactPerson = new Label { Text = "Contact Person", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtContactPerson = new TextBox();
         var pnlContactPerson = AppTheme.WrapInputPanel(_txtContactPerson);
         pnlContactPerson.Location = new Point(30, startY + 25); pnlContactPerson.Width = 420;
@@ -96,7 +96,7 @@ public sealed class SupplierEditForm : Form
         startY += spacing;
 
         // Phone
-        var lblPhone = new Label { Text = "Phone Number", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblPhone = new Label { Text = "Phone Number", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtPhone = new TextBox();
         var pnlPhone = AppTheme.WrapInputPanel(_txtPhone);
         pnlPhone.Location = new Point(30, startY + 25); pnlPhone.Width = 420;
@@ -105,7 +105,7 @@ public sealed class SupplierEditForm : Form
         startY += spacing;
 
         // Email
-        var lblEmail = new Label { Text = "Email Address", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblEmail = new Label { Text = "Email Address", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtEmail = new TextBox();
         var pnlEmail = AppTheme.WrapInputPanel(_txtEmail);
         pnlEmail.Location = new Point(30, startY + 25); pnlEmail.Width = 420;
@@ -114,7 +114,7 @@ public sealed class SupplierEditForm : Form
         startY += spacing;
 
         // Address
-        var lblAddress = new Label { Text = "Address", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblAddress = new Label { Text = "Address", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtAddress = new TextBox { Multiline = true, Height = 60 };
         var pnlAddress = AppTheme.WrapInputPanel(_txtAddress);
         pnlAddress.Location = new Point(30, startY + 25); pnlAddress.Width = 420; pnlAddress.Height = 70;

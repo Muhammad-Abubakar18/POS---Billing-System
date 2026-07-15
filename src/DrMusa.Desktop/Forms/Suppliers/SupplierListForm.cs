@@ -64,7 +64,7 @@ public sealed class SupplierListForm : Form
         {
             Text = "Manage your product suppliers and view their details.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 50)
         };
@@ -126,7 +126,7 @@ public sealed class SupplierListForm : Form
         {
             Text = "Loading...",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 8)
         };
@@ -153,7 +153,7 @@ public sealed class SupplierListForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundDark,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold,
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 SelectionBackColor = AppTheme.BackgroundDark

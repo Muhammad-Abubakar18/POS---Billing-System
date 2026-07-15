@@ -56,7 +56,7 @@ public sealed class ProductListForm : Form
         {
             Text = "Add, edit, search, and soft delete active products.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 50)
         };
@@ -112,7 +112,7 @@ public sealed class ProductListForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundDark,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold
             },
             DefaultCellStyle = new DataGridViewCellStyle

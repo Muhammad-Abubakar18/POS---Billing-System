@@ -51,7 +51,7 @@ public sealed class InventoryForm : Form
         {
             Text = "Manage current stock, adjustments, and view history.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 50)
         };
@@ -69,39 +69,34 @@ public sealed class InventoryForm : Form
         pnlSearch.Location = new Point(400, 30);
 
         var btnStockIn = new Button { Text = "Stock In", Width = 90, Height = 36, Location = new Point(610, 30) };
-        AppTheme.StylePrimaryButton(btnStockIn);
-        btnStockIn.BackColor = AppTheme.ColorFromHex("#2E7D32"); // Greenish
+        AppTheme.StyleCustomColorButton(btnStockIn, AppTheme.ColorFromHex("#2E7D32")); // Greenish
         btnStockIn.Click += (s, e) => OpenMovementForm(Common.Enums.StockMovementType.StockIn);
 
         var btnStockOut = new Button { Text = "Stock Out", Width = 90, Height = 36, Location = new Point(710, 30) };
-        AppTheme.StylePrimaryButton(btnStockOut);
-        btnStockOut.BackColor = AppTheme.AccentDanger;
+        AppTheme.StyleCustomColorButton(btnStockOut, AppTheme.AccentDanger);
         btnStockOut.Click += (s, e) => OpenMovementForm(Common.Enums.StockMovementType.StockOut);
 
         var btnAdjust = new Button { Text = "Adjust Stock", Width = 110, Height = 36, Location = new Point(810, 30) };
-        AppTheme.StylePrimaryButton(btnAdjust);
-        btnAdjust.BackColor = AppTheme.ColorFromHex("#F57F17"); // Yellow/Orange
+        AppTheme.StyleCustomColorButton(btnAdjust, AppTheme.ColorFromHex("#F57F17")); // Yellow/Orange
         btnAdjust.Click += (s, e) => OpenMovementForm(Common.Enums.StockMovementType.Adjustment);
 
         var btnMinStock = new Button { Text = "Set Min Stock", Width = 120, Height = 36, Location = new Point(930, 30) };
-        AppTheme.StylePrimaryButton(btnMinStock);
-        btnMinStock.BackColor = AppTheme.ColorFromHex("#8E24AA"); // Purple
+        AppTheme.StyleCustomColorButton(btnMinStock, AppTheme.ColorFromHex("#8E24AA")); // Purple
         btnMinStock.Click += async (s, e) => await OpenMinStockFormAsync();
 
         var btnHistory = new Button { Text = "History", Width = 90, Height = 36, Location = new Point(1060, 30) };
-        AppTheme.StylePrimaryButton(btnHistory);
-        btnHistory.BackColor = AppTheme.ColorFromHex("#0277BD"); // Blue
+        AppTheme.StyleCustomColorButton(btnHistory, AppTheme.ColorFromHex("#0277BD")); // Blue
         btnHistory.Click += (s, e) => OpenHistoryForm();
 
-        // Handle resizing/layout
+        // Handle resizing/layout safely to prevent overlaps
         header.SizeChanged += (s, e) =>
         {
-            btnHistory.Left = header.Width - btnHistory.Width - 20;
+            btnHistory.Left = Math.Max(header.Width - btnHistory.Width - 20, 1060);
             btnMinStock.Left = btnHistory.Left - btnMinStock.Width - 10;
             btnAdjust.Left = btnMinStock.Left - btnAdjust.Width - 10;
             btnStockOut.Left = btnAdjust.Left - btnStockOut.Width - 10;
             btnStockIn.Left = btnStockOut.Left - btnStockIn.Width - 10;
-            pnlSearch.Left = btnStockIn.Left - pnlSearch.Width - 20;
+            pnlSearch.Left = Math.Max(btnStockIn.Left - pnlSearch.Width - 20, lblTitle.Right + 20);
         };
 
         header.Controls.AddRange(new Control[] { lblTitle, lblSubtitle, pnlSearch, btnStockIn, btnStockOut, btnAdjust, btnMinStock, btnHistory });
@@ -127,7 +122,7 @@ public sealed class InventoryForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundPanel,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold,
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 SelectionBackColor = AppTheme.BackgroundPanel

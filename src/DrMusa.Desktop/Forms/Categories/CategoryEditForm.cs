@@ -63,7 +63,7 @@ public sealed class CategoryEditForm : Form
         {
             Text = "Categories organise products on the POS billing screen.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(28, 56)
         };
@@ -137,7 +137,7 @@ public sealed class CategoryEditForm : Form
         var label = new Label
         {
             Text = labelText,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(0, 0)
         };

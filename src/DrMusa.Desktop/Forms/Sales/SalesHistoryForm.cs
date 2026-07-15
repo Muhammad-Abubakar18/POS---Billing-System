@@ -36,6 +36,7 @@ public partial class SalesHistoryForm : Form
         this.Text = "DrMusa — Sales History";
         this.BackColor = AppTheme.BackgroundDark;
         this.Font = AppTheme.FontBody;
+        this.Size = new Size(1040, 700);
 
         var mainPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20) };
         this.Controls.Add(mainPanel);
@@ -44,20 +45,20 @@ public partial class SalesHistoryForm : Form
         mainPanel.Controls.Add(lblTitle);
 
         // --- Filter Panel ---
-        var filterPanel = new Panel { Location = new Point(20, 70), Size = new Size(1000, 60), BackColor = AppTheme.BackgroundCard };
+        var filterPanel = new Panel { Location = new Point(20, 70), Size = new Size(1000, 60), BackColor = AppTheme.BackgroundCard, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
         
         var lblFrom = new Label { Text = "From:", AutoSize = true, Location = new Point(10, 20), ForeColor = AppTheme.TextPrimary };
         _dtFrom = new DateTimePicker { Location = new Point(60, 16), Format = DateTimePickerFormat.Short, Value = DateTime.Today.AddDays(-7) };
         
-        var lblTo = new Label { Text = "To:", AutoSize = true, Location = new Point(200, 20), ForeColor = AppTheme.TextPrimary };
-        _dtTo = new DateTimePicker { Location = new Point(240, 16), Format = DateTimePickerFormat.Short, Value = DateTime.Today };
+        var lblTo = new Label { Text = "To:", AutoSize = true, Location = new Point(230, 20), ForeColor = AppTheme.TextPrimary };
+        _dtTo = new DateTimePicker { Location = new Point(270, 16), Width = 130, Format = DateTimePickerFormat.Short, Value = DateTime.Today };
 
-        var btnFilter = new Button { Text = "Load Dates", Location = new Point(370, 14), Width = 100, Height = 30 };
+        var btnFilter = new Button { Text = "Load Dates", Location = new Point(420, 14), Width = 100, Height = 30 };
         AppTheme.StyleSecondaryButton(btnFilter);
         btnFilter.Click += async (s, e) => await LoadDataAsync();
 
-        var lblSearch = new Label { Text = "Invoice Number:", AutoSize = true, Location = new Point(600, 20), ForeColor = AppTheme.TextPrimary };
-        _txtSearch = new TextBox { Location = new Point(710, 16), Width = 200, Font = new Font("Segoe UI", 11f) };
+        var lblSearch = new Label { Text = "Invoice Number:", AutoSize = true, Location = new Point(540, 20), ForeColor = AppTheme.TextPrimary };
+        _txtSearch = new TextBox { Location = new Point(660, 16), Width = 200, Font = new Font("Segoe UI", 11f) };
         _txtSearch.TextChanged += (s, e) => FilterGrid();
 
         filterPanel.Controls.Add(lblFrom);
@@ -74,6 +75,7 @@ public partial class SalesHistoryForm : Form
         {
             Location = new Point(20, 150),
             Size = new Size(1000, 450),
+            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
             AllowUserToAddRows = false,
             AllowUserToDeleteRows = false,
             ReadOnly = true,
@@ -81,7 +83,8 @@ public partial class SalesHistoryForm : Form
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
             BackgroundColor = AppTheme.BackgroundCard,
             RowHeadersVisible = false,
-            AllowUserToResizeRows = false
+            AllowUserToResizeRows = false,
+            ScrollBars = ScrollBars.Both
         };
         AppTheme.StyleDataGridView(_grid);
 
@@ -96,7 +99,7 @@ public partial class SalesHistoryForm : Form
         mainPanel.Controls.Add(_grid);
 
         // --- Action Buttons ---
-        var actionPanel = new FlowLayoutPanel { Location = new Point(20, 620), Size = new Size(1000, 50), FlowDirection = FlowDirection.LeftToRight };
+        var actionPanel = new FlowLayoutPanel { Location = new Point(20, 620), Size = new Size(1000, 50), FlowDirection = FlowDirection.LeftToRight, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
         
         var btnView = new Button { Text = "View Details", Width = 120, Height = 40 };
         AppTheme.StylePrimaryButton(btnView);

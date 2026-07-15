@@ -82,7 +82,7 @@ public sealed class ReportsForm : Form
         {
             Text = "Monitor your business performance, profit trends, and top products.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 50)
         };
@@ -243,7 +243,7 @@ public sealed class ReportsForm : Form
         var lblTitle = new Label
         {
             Text = title,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             Font = AppTheme.FontSmall,
             Location = new Point(15, 15),
             AutoSize = true
@@ -307,7 +307,7 @@ public sealed class ReportsForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundPanel,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold,
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 SelectionBackColor = AppTheme.BackgroundPanel

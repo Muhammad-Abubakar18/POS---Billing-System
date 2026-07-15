@@ -52,7 +52,7 @@ public partial class DashboardControl : UserControl
         {
             Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy"),
             Font = new Font("Segoe UI", 9f),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize = true
         };
@@ -202,7 +202,7 @@ public partial class DashboardControl : UserControl
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundDark,
-                ForeColor = Color.White,
+                ForeColor = AppTheme.TextPrimary,
                 Font = new Font("Segoe UI", 9f, FontStyle.Bold)
             }
         };
@@ -239,7 +239,7 @@ public partial class DashboardControl : UserControl
         {
             Text = title,
             Font = new Font("Segoe UI", 8.5f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize = true,
             Location = new Point(16, 85)

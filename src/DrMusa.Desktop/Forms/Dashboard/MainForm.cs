@@ -100,7 +100,7 @@ public partial class MainForm : Form
         {
             Text      = SessionManager.CurrentRole?.ToString() ?? "",
             Font      = new Font("Segoe UI", 8f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(0, 32)
@@ -158,7 +158,7 @@ public partial class MainForm : Form
             Location  = new Point(0, 11),
             FlatStyle = FlatStyle.Flat,
             BackColor = bg,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             Cursor    = Cursors.Hand,
             Font      = new Font("Segoe UI", 9f, FontStyle.Bold)
         };
@@ -241,7 +241,7 @@ public partial class MainForm : Form
             Height = 45,
             FlatStyle = FlatStyle.Flat,
             BackColor = Color.Transparent,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             TextAlign = ContentAlignment.MiddleLeft,
             Padding = new Padding(20, 0, 0, 0),
             Font = new Font("Segoe UI", 10f, FontStyle.Regular),

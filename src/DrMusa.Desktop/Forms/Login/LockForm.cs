@@ -74,7 +74,7 @@ public sealed class LockForm : Form
         {
             Text      = $"Signed in as  {SessionManager.CurrentFullName ?? SessionManager.CurrentUsername}",
             Font      = new Font("Segoe UI", 9.5f, FontStyle.Regular),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(0, 212)
@@ -94,7 +94,7 @@ public sealed class LockForm : Form
         {
             Text      = "ENTER PASSWORD TO UNLOCK",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(80, 276)
@@ -111,12 +111,12 @@ public sealed class LockForm : Form
         {
             Text      = "👁",
             Size      = new Size(36, 36),
-            Location  = new Point(286, 4),
+            Location  = new Point(280, 4),
             FlatStyle = FlatStyle.Flat,
-            BackColor = Color.Transparent,
-            ForeColor = AppTheme.TextMuted,
+            BackColor = AppTheme.BackgroundCard,
+            ForeColor = AppTheme.TextPrimary,
             Cursor    = Cursors.Hand,
-            Font      = new Font("Segoe UI", 9f),
+            Font      = new Font("Segoe UI Emoji", 11f),
             TabStop   = false
         };
         btnToggle.FlatAppearance.BorderSize = 0;
@@ -126,6 +126,7 @@ public sealed class LockForm : Form
             _txtPassword.PasswordChar = _passwordVisible ? '\0' : '●';
         };
         pnlPass.Controls.Add(btnToggle);
+        btnToggle.BringToFront();
 
         // ── Error label ───────────────────────────────────────────────────────
         _lblError = new Label
@@ -162,7 +163,7 @@ public sealed class LockForm : Form
             TabIndex  = 2,
             FlatStyle = FlatStyle.Flat,
             BackColor = Color.Transparent,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             Cursor    = Cursors.Hand,
             Font      = new Font("Segoe UI", 9f, FontStyle.Regular)
         };

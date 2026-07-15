@@ -1,4 +1,4 @@
-ï»¿namespace DrMusa.Desktop.Forms.Purchases;
+namespace DrMusa.Desktop.Forms.Purchases;
 
 /// <summary>Placeholder for the Purchase Management form. Implement full UI in the next phase.</summary>
 public partial class PurchaseListForm : Form
@@ -13,13 +13,13 @@ public partial class PurchaseListForm : Form
 
     private void InitializeComponent()
     {
-        this.Text = "DrMusa â€” Purchase Management";
+        this.Text = "DrMusa — Purchase Management";
         this.Size = new Size(1000, 650);
         this.StartPosition = FormStartPosition.CenterScreen;
 
         var lblPlaceholder = new Label
         {
-            Text = "Purchase Management â€” Full UI coming in Phase implementation.",
+            Text = "Purchase Management — Full UI coming in Phase implementation.",
             Font = new Font("Segoe UI", 14),
             AutoSize = true,
             Location = new Point(50, 50)

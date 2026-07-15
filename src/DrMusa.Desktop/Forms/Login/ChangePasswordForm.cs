@@ -91,7 +91,7 @@ public sealed class ChangePasswordForm : Form
         {
             Text      = $"Account: {SessionManager.CurrentUsername}",
             Font      = new Font("Segoe UI", 9f),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(72, 62)
@@ -109,7 +109,7 @@ public sealed class ChangePasswordForm : Form
         {
             Text      = "CURRENT PASSWORD",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 116)
@@ -124,7 +124,7 @@ public sealed class ChangePasswordForm : Form
         {
             Text      = "NEW PASSWORD",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 198)
@@ -167,7 +167,7 @@ public sealed class ChangePasswordForm : Form
         {
             Text      = "CONFIRM NEW PASSWORD",
             Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
             AutoSize  = true,
             Location  = new Point(30, 300)

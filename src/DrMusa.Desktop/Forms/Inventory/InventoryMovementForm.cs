@@ -67,7 +67,7 @@ public sealed class InventoryMovementForm : Form
         int spacing = 75;
 
         // Product
-        var lblProduct = new Label { Text = "Product *", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblProduct = new Label { Text = "Product *", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _cmbProduct = new ComboBox
         {
             Location = new Point(30, startY + 25),
@@ -81,7 +81,7 @@ public sealed class InventoryMovementForm : Form
 
         // Quantity
         string qtyLabel = _type == Common.Enums.StockMovementType.Adjustment ? "New Stock Level *" : "Quantity *";
-        var lblQty = new Label { Text = qtyLabel, Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblQty = new Label { Text = qtyLabel, Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _numQuantity = new NumericUpDown
         {
             Location = new Point(30, startY + 25),
@@ -96,7 +96,7 @@ public sealed class InventoryMovementForm : Form
         startY += spacing;
 
         // Notes
-        var lblNotes = new Label { Text = "Notes", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblNotes = new Label { Text = "Notes", Location = new Point(30, startY), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _txtNotes = new TextBox { Multiline = true, Height = 60 };
         var pnlNotes = AppTheme.WrapInputPanel(_txtNotes);
         pnlNotes.Location = new Point(30, startY + 25);

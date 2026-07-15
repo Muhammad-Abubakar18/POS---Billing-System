@@ -146,6 +146,28 @@ public static class AppTheme
         btn.MouseLeave += (s, e) => btn.BackColor = AccentPrimary;
     }
 
+    /// <summary>Styles a button with a custom background color and dynamic hover effect.</summary>
+    public static void StyleCustomColorButton(Button btn, Color backColor)
+    {
+        btn.FlatStyle = FlatStyle.Flat;
+        btn.FlatAppearance.BorderSize = 0;
+        btn.BackColor = backColor;
+        btn.ForeColor = TextOnAccent;
+        btn.Font = FontButton;
+        btn.Cursor = Cursors.Hand;
+        btn.Height = 44;
+        btn.TextAlign = ContentAlignment.MiddleCenter;
+
+        // Darken the color slightly for hover
+        int r = Math.Max(0, backColor.R - 30);
+        int g = Math.Max(0, backColor.G - 30);
+        int b = Math.Max(0, backColor.B - 30);
+        Color hoverColor = Color.FromArgb(r, g, b);
+
+        btn.MouseEnter += (s, e) => btn.BackColor = hoverColor;
+        btn.MouseLeave += (s, e) => btn.BackColor = backColor;
+    }
+
     /// <summary>Styles a secondary / ghost button.</summary>
     public static void StyleSecondaryButton(Button btn)
     {
@@ -200,7 +222,7 @@ public static class AppTheme
         
         grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
         grid.ColumnHeadersDefaultCellStyle.BackColor = BackgroundDark;
-        grid.ColumnHeadersDefaultCellStyle.ForeColor = TextSecondary;
+        grid.ColumnHeadersDefaultCellStyle.ForeColor = TextPrimary;
         grid.ColumnHeadersDefaultCellStyle.Font = FontBodyBold;
         grid.EnableHeadersVisualStyles = false;
         

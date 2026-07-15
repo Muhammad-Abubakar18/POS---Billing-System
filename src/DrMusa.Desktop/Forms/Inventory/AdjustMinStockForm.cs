@@ -52,7 +52,7 @@ public sealed class AdjustMinStockForm : Form
             BackColor = AppTheme.BackgroundCard
         };
 
-        var lblMinStock = new Label { Text = "Minimum Stock Threshold *", Location = new Point(30, 20), AutoSize = true, ForeColor = AppTheme.TextSecondary };
+        var lblMinStock = new Label { Text = "Minimum Stock Threshold *", Location = new Point(30, 20), AutoSize = true, ForeColor = AppTheme.TextPrimary };
         _numMinStock = new NumericUpDown
         {
             Location = new Point(30, 45),

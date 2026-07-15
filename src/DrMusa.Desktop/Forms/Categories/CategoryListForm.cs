@@ -62,7 +62,7 @@ public sealed class CategoryListForm : Form
         {
             Text = "Organise your menu into categories for easy POS navigation.",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 50)
         };
@@ -119,7 +119,7 @@ public sealed class CategoryListForm : Form
         {
             Text = "Loading...",
             Font = AppTheme.FontSmall,
-            ForeColor = AppTheme.TextSecondary,
+            ForeColor = AppTheme.TextPrimary,
             AutoSize = true,
             Location = new Point(20, 8)
         };
@@ -146,7 +146,7 @@ public sealed class CategoryListForm : Form
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundDark,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = AppTheme.TextPrimary,
                 Font = AppTheme.FontBodyBold,
                 Padding = new Padding(10, 0, 0, 0)
             },
