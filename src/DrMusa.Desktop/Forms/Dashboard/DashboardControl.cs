@@ -78,24 +78,21 @@ public partial class DashboardControl : UserControl
             ("Today's Sales",   AppTheme.AccentPrimary,  "₨"),
             ("Monthly Sales",   AppTheme.AccentSuccess,  "📈"),
             ("Total Products",  AppTheme.AccentWarning,  "📦"),
-            ("Total Customers", AppTheme.ColorFromHex("#A855F7"), "👥"),
-            ("Total Suppliers", AppTheme.ColorFromHex("#14B8A6"), "🚚"),
             ("Low Stock",       AppTheme.AccentDanger,   "⚠"),
         };
 
         _lblTodaySales = new Label();
         _lblMonthlySales = new Label();
         _lblTotalProducts = new Label();
-        _lblTotalCustomers = new Label();
-        _lblTotalSuppliers = new Label();
         _lblLowStock = new Label();
 
-        var valueLabels = new[] { _lblTodaySales, _lblMonthlySales, _lblTotalProducts, _lblTotalCustomers, _lblTotalSuppliers, _lblLowStock };
+        var valueLabels = new[] { _lblTodaySales, _lblMonthlySales, _lblTotalProducts, _lblLowStock };
 
         for (int i = 0; i < stats.Length; i++)
         {
             var (title, accent, icon) = stats[i];
             var card = BuildStatCard(title, icon, accent, valueLabels[i]);
+            card.Width = 240; // Make cards wider now that there are fewer of them
             statsPanel.Controls.Add(card);
         }
 
@@ -205,7 +202,7 @@ public partial class DashboardControl : UserControl
             ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
                 BackColor = AppTheme.BackgroundDark,
-                ForeColor = AppTheme.TextSecondary,
+                ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9f, FontStyle.Bold)
             }
         };
@@ -285,8 +282,6 @@ public partial class DashboardControl : UserControl
         _lblTodaySales.Text = UIHelper.FormatCurrency(data.TodaySales);
         _lblMonthlySales.Text = UIHelper.FormatCurrency(data.MonthlySales);
         _lblTotalProducts.Text = data.TotalProducts.ToString("N0");
-        _lblTotalCustomers.Text = data.TotalCustomers.ToString("N0");
-        _lblTotalSuppliers.Text = data.TotalSuppliers.ToString("N0");
         _lblLowStock.Text = data.LowStockCount.ToString();
         _lblLowStock.ForeColor = data.LowStockCount > 0 ? AppTheme.AccentDanger : AppTheme.AccentSuccess;
 

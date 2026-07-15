@@ -216,9 +216,6 @@ public partial class MainForm : Form
         btnSales.Click += (s, e) => OpenSalesModule();
         btnSales.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin, DrMusa.Common.Enums.UserRole.Cashier);
         
-        var btnCustomers = CreateSidebarButton("👥  Customers");
-        btnCustomers.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner, DrMusa.Common.Enums.UserRole.SubAdmin);
-        
         var btnReports = CreateSidebarButton("📈  Reports");
         btnReports.Click += (s, e) => OpenReportsModule();
         btnReports.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
@@ -232,7 +229,7 @@ public partial class MainForm : Form
         btnSettings.Visible = SessionManager.HasRole(DrMusa.Common.Enums.UserRole.Owner);
 
         // Note: Controls are added to the panel in reverse visual order because DockStyle.Top stacks them.
-        _sideBar.Controls.AddRange(new Control[] { btnSettings, btnUsers, btnReports, btnCustomers, btnInventory, btnProducts, btnCategories, btnSales, btnBilling, btnDashboard });
+        _sideBar.Controls.AddRange(new Control[] { btnSettings, btnUsers, btnReports, btnInventory, btnProducts, btnCategories, btnSales, btnBilling, btnDashboard });
     }
 
     private Button CreateSidebarButton(string text)

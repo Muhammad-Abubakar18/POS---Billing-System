@@ -48,6 +48,8 @@ public class SaleRepository : Repository<Sale>, ISaleRepository
     {
         var saleItems = await _context.Set<SaleItem>()
             .Include(si => si.Product)
+            .Include(si => si.Sale)
+            .Where(si => si.Sale!.Status == Common.Enums.SaleStatus.Completed)
             .ToListAsync();
 
         var topSelling = saleItems
