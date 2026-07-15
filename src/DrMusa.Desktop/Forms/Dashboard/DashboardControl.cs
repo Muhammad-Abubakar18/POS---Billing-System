@@ -1,6 +1,11 @@
 using DrMusa.Business.DTOs;
 using DrMusa.Business.Interfaces;
 using DrMusa.Desktop.Helpers;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.WinForms;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
 namespace DrMusa.Desktop.Forms.Dashboard;
 
@@ -20,9 +25,8 @@ public partial class DashboardControl : UserControl
     private DataGridView _gridLowStock = null!;
     private DataGridView _gridTopSelling = null!;
 
-    // Chart Panel
-    private Panel _chartPanel = null!;
-    private IList<SalesGraphDataDto> _graphData = new List<SalesGraphDataDto>();
+    // Chart
+    private CartesianChart _chartPanel = null!;
 
     public DashboardControl(ISaleService saleService)
     {
@@ -108,8 +112,7 @@ public partial class DashboardControl : UserControl
         layoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
         layoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
-        _chartPanel = new Panel { Dock = DockStyle.Fill, BackColor = AppTheme.BackgroundCard, Margin = new Padding(0, 0, 10, 10) };
-        _chartPanel.Paint += ChartPanel_Paint;
+        _chartPanel = new CartesianChart { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 10, 10), BackColor = AppTheme.BackgroundCard };
 
         _gridRecent = CreateDataGrid();
         _gridLowStock = CreateDataGrid();
@@ -305,64 +308,34 @@ public partial class DashboardControl : UserControl
             Revenue = UIHelper.FormatCurrency(p.TotalRevenue)
         }).ToList();
 
-        _graphData = data.SalesGraphData;
-        _chartPanel.Invalidate(); // trigger repaint
-    }
-
-    private void ChartPanel_Paint(object? sender, PaintEventArgs e)
-    {
-        if (_graphData == null || _graphData.Count == 0) return;
-
-        var g = e.Graphics;
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-        int width = _chartPanel.Width;
-        int height = _chartPanel.Height;
-        int padX = 40;
-        int padY = 30;
-
-        decimal maxAmt = _graphData.Max(d => d.Amount);
-        if (maxAmt == 0) maxAmt = 1000; // prevent div by 0
-
-        int barWidth = (width - (padX * 2)) / Math.Max(1, _graphData.Count) - 10;
-        if (barWidth < 5) barWidth = 5;
-
-        using var penAxis = new Pen(AppTheme.BorderDefault, 1f);
-        using var fontAxis = new Font("Segoe UI", 7f);
-        using var brushText = new SolidBrush(AppTheme.TextSecondary);
-        using var brushBar = new SolidBrush(AppTheme.AccentPrimary);
-
-        // Draw axes
-        g.DrawLine(penAxis, padX, height - padY, width - 10, height - padY);
-        g.DrawLine(penAxis, padX, 10, padX, height - padY);
-
-        int currentX = padX + 10;
-
-        foreach (var data in _graphData)
+        // Bind Chart
+        _chartPanel.Series = new ISeries[]
         {
-            decimal ratio = data.Amount / maxAmt;
-            int barHeight = (int)((height - padY - 20) * ratio);
-            
-            int x = currentX;
-            int y = height - padY - barHeight;
-
-            // Draw bar
-            g.FillRectangle(brushBar, x, y, barWidth, barHeight);
-
-            // Draw X label
-            var dateStr = data.Date.ToString("dd MMM");
-            var size = g.MeasureString(dateStr, fontAxis);
-            g.DrawString(dateStr, fontAxis, brushText, x + (barWidth / 2) - (size.Width / 2), height - padY + 5);
-
-            // Draw value
-            if (data.Amount > 0)
+            new ColumnSeries<decimal>
             {
-                var valStr = data.Amount >= 1000 ? $"{(data.Amount / 1000):0.#}k" : data.Amount.ToString("0");
-                var valSize = g.MeasureString(valStr, fontAxis);
-                g.DrawString(valStr, fontAxis, brushText, x + (barWidth / 2) - (valSize.Width / 2), y - 15);
+                Values = data.SalesGraphData.Select(d => d.Amount).ToArray(),
+                Name = "Sales",
+                Fill = new SolidColorPaint(new SKColor(10, 130, 140)), // Match AccentPrimary
+                DataLabelsPaint = new SolidColorPaint(new SKColor(255, 255, 255)),
+                DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top
             }
+        };
 
-            currentX += barWidth + 10;
-        }
+        _chartPanel.XAxes = new[]
+        {
+            new Axis
+            {
+                Labels = data.SalesGraphData.Select(d => d.Date.ToString("dd MMM")).ToArray(),
+                LabelsPaint = new SolidColorPaint(new SKColor(200, 200, 200))
+            }
+        };
+
+        _chartPanel.YAxes = new[]
+        {
+            new Axis
+            {
+                LabelsPaint = new SolidColorPaint(new SKColor(200, 200, 200))
+            }
+        };
     }
 }

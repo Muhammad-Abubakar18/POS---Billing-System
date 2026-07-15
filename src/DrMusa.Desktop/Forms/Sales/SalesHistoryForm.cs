@@ -41,11 +41,9 @@ public partial class SalesHistoryForm : Form
         var mainPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20) };
         this.Controls.Add(mainPanel);
 
-        var lblTitle = new Label { Text = "Sales History", Font = AppTheme.FontTitle, ForeColor = AppTheme.TextPrimary, AutoSize = true, Location = new Point(20, 20) };
-        mainPanel.Controls.Add(lblTitle);
+        var lblTitle = new Label { Text = "Sales History", Font = AppTheme.FontTitle, ForeColor = AppTheme.TextPrimary, AutoSize = true, Location = new Point(0, 0) };
 
-        // --- Filter Panel ---
-        var filterPanel = new Panel { Location = new Point(20, 70), Size = new Size(1000, 60), BackColor = AppTheme.BackgroundCard, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+        var filterPanel = new Panel { Location = new Point(0, 50), Size = new Size(1000, 60), BackColor = AppTheme.BackgroundCard, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
         
         var lblFrom = new Label { Text = "From:", AutoSize = true, Location = new Point(10, 20), ForeColor = AppTheme.TextPrimary };
         _dtFrom = new DateTimePicker { Location = new Point(60, 16), Format = DateTimePickerFormat.Short, Value = DateTime.Today.AddDays(-7) };
@@ -68,38 +66,13 @@ public partial class SalesHistoryForm : Form
         filterPanel.Controls.Add(btnFilter);
         filterPanel.Controls.Add(lblSearch);
         filterPanel.Controls.Add(_txtSearch);
-        mainPanel.Controls.Add(filterPanel);
 
-        // --- Grid ---
-        _grid = new DataGridView
-        {
-            Location = new Point(20, 150),
-            Size = new Size(1000, 450),
-            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-            AllowUserToAddRows = false,
-            AllowUserToDeleteRows = false,
-            ReadOnly = true,
-            SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-            BackgroundColor = AppTheme.BackgroundCard,
-            RowHeadersVisible = false,
-            AllowUserToResizeRows = false,
-            ScrollBars = ScrollBars.Both
-        };
-        AppTheme.StyleDataGridView(_grid);
-
-        _grid.Columns.Add("Id", "Id");
-        _grid.Columns["Id"].Visible = false;
-        _grid.Columns.Add("Invoice", "Invoice Number");
-        _grid.Columns.Add("Date", "Date");
-        _grid.Columns.Add("Items", "Items");
-        _grid.Columns.Add("Total", "Total Amount");
-        _grid.Columns.Add("Status", "Status");
-
-        mainPanel.Controls.Add(_grid);
+        var headerPanel = new Panel { Dock = DockStyle.Top, Height = 120 };
+        headerPanel.Controls.Add(lblTitle);
+        headerPanel.Controls.Add(filterPanel);
 
         // --- Action Buttons ---
-        var actionPanel = new FlowLayoutPanel { Location = new Point(20, 620), Size = new Size(1000, 50), FlowDirection = FlowDirection.LeftToRight, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
+        var actionPanel = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 60, FlowDirection = FlowDirection.LeftToRight, Padding = new Padding(0, 15, 0, 0) };
         
         var btnView = new Button { Text = "View Details", Width = 120, Height = 40 };
         AppTheme.StylePrimaryButton(btnView);
@@ -121,7 +94,33 @@ public partial class SalesHistoryForm : Form
             actionPanel.Controls.Add(btnCancel);
         }
 
-        mainPanel.Controls.Add(actionPanel);
+        // --- Grid ---
+        _grid = new DataGridView
+        {
+            Dock = DockStyle.Fill,
+            AllowUserToAddRows = false,
+            AllowUserToDeleteRows = false,
+            ReadOnly = true,
+            SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            BackgroundColor = AppTheme.BackgroundCard,
+            RowHeadersVisible = false,
+            AllowUserToResizeRows = false,
+            ScrollBars = ScrollBars.Both
+        };
+        AppTheme.StyleDataGridView(_grid);
+
+        _grid.Columns.Add("Id", "Id");
+        _grid.Columns["Id"].Visible = false;
+        _grid.Columns.Add("Invoice", "Invoice Number");
+        _grid.Columns.Add("Date", "Date");
+        _grid.Columns.Add("Items", "Items");
+        _grid.Columns.Add("Total", "Total Amount");
+        _grid.Columns.Add("Status", "Status");
+
+        mainPanel.Controls.Add(_grid);        // Fill (must be added last so it occupies remaining space)
+        mainPanel.Controls.Add(headerPanel);  // Top
+        mainPanel.Controls.Add(actionPanel);  // Bottom
     }
 
     private async Task LoadDataAsync()

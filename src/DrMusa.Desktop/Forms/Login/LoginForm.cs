@@ -395,12 +395,14 @@ public sealed class LoginForm : Form
         // Copyright
         _lblCopyright = new Label
         {
-            Text = "© 2025 DrMusa. All rights reserved.",
+            Text = "© 2026 Crabian Developers. All rights reserved.\nm.abubakar.prof@gmail.com",
             Font = AppTheme.FontCaption,
             ForeColor = AppTheme.TextMuted,
             BackColor = Color.Transparent,
-            AutoSize = true,
-            Location = new Point(30, 400)
+            AutoSize = false,
+            Size = new Size(360, 60),
+            TextAlign = ContentAlignment.TopCenter,
+            Location = new Point(10, 385)
         };
 
         _formCard.Controls.AddRange(new Control[]
