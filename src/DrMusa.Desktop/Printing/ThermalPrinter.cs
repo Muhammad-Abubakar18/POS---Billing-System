@@ -16,7 +16,7 @@ public class ThermalPrinter
         _data = data;
     }
 
-    public void PrintReceipt(string printerName = null)
+    public void PrintReceipt(string? printerName = null)
     {
         using (PrintDocument pd = CreatePrintDocument(printerName))
         {
@@ -47,7 +47,7 @@ public class ThermalPrinter
         }
     }
 
-    private PrintDocument CreatePrintDocument(string printerName)
+    private PrintDocument CreatePrintDocument(string? printerName)
     {
         PrintDocument pd = new PrintDocument();
         
@@ -86,8 +86,11 @@ public class ThermalPrinter
             offsetX = (effectiveWidth - receiptWidth) / 2;
         }
 
-        var renderer = new ReceiptRenderer(e.Graphics, _data, receiptWidth, offsetX);
-        renderer.DrawReceipt();
+        if (e.Graphics != null)
+        {
+            var renderer = new ReceiptRenderer(e.Graphics, _data, receiptWidth, offsetX);
+            renderer.DrawReceipt();
+        }
         
         e.HasMorePages = false;
     }

@@ -554,13 +554,13 @@ public partial class BillingForm : Form
                 var settings = _serviceProvider.GetRequiredService<DrMusa.Data.Context.DrMusaDbContext>().Settings.ToDictionary(s => s.Key, s => s.Value);
                 var printer = new DrMusa.Desktop.Helpers.ReceiptPrinter(
                     sale,
-                    settings.GetValueOrDefault("BusinessName", "DrMusa Store"),
-                    settings.GetValueOrDefault("BusinessPhone", ""),
-                    settings.GetValueOrDefault("BusinessAddress", ""),
-                    settings.GetValueOrDefault("ReceiptHeader", "Thank you for shopping!"),
-                    settings.GetValueOrDefault("ReceiptFooter", "Please come again"),
-                    settings.GetValueOrDefault("Currency", "PKR"),
-                    settings.GetValueOrDefault("BusinessLogo", "")
+                    settings.GetValueOrDefault("BusinessName", "DrMusa Store") ?? "DrMusa Store",
+                    settings.GetValueOrDefault("BusinessPhone", "") ?? "",
+                    settings.GetValueOrDefault("BusinessAddress", "") ?? "",
+                    settings.GetValueOrDefault("ReceiptHeader", "Thank you for shopping!") ?? "Thank you for shopping!",
+                    settings.GetValueOrDefault("ReceiptFooter", "Please come again") ?? "Please come again",
+                    settings.GetValueOrDefault("Currency", "PKR") ?? "PKR",
+                    settings.GetValueOrDefault("BusinessLogo", "") ?? ""
                 );
                 printer.Print(preview: true);
             }

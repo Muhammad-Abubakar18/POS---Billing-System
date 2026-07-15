@@ -12,8 +12,7 @@ public partial class DashboardControl : UserControl
     private Label _lblTodaySales = null!;
     private Label _lblMonthlySales = null!;
     private Label _lblTotalProducts = null!;
-    private Label _lblTotalCustomers = null!;
-    private Label _lblTotalSuppliers = null!;
+
     private Label _lblLowStock = null!;
 
     // Grids
