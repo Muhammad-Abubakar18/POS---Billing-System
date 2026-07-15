@@ -25,6 +25,7 @@ public partial class SettingsForm : Form
     private TextBox _txtReceiptFooter = null!;
     private PictureBox _picLogo = null!;
     private string? _currentLogoBase64;
+    private TextBox _txtAutoBackupDir = null!;
 
     public SettingsForm(IServiceProvider serviceProvider)
     {
@@ -177,6 +178,36 @@ public partial class SettingsForm : Form
 
         tabs.TabPages.Add(tabDb);
 
+        var lblAutoBackup = new Label
+        {
+            Text = "Automatic Backup Directory (e.g., Google Drive sync folder):",
+            Font = new Font("Segoe UI", 11f),
+            ForeColor = AppTheme.TextPrimary,
+            AutoSize = true,
+            Location = new Point(20, 120)
+        };
+        tabDb.Controls.Add(lblAutoBackup);
+
+        _txtAutoBackupDir = new TextBox { Width = 400, Font = new Font("Segoe UI", 11f), Location = new Point(20, 150), ReadOnly = true };
+        tabDb.Controls.Add(_txtAutoBackupDir);
+
+        var btnBrowseAutoBackup = new Button { Text = "Browse...", Width = 100, Height = 30, Location = new Point(430, 149) };
+        AppTheme.StyleSecondaryButton(btnBrowseAutoBackup);
+        btnBrowseAutoBackup.Click += (s, e) =>
+        {
+            using var fbd = new FolderBrowserDialog { Description = "Select Automatic Backup Directory" };
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                _txtAutoBackupDir.Text = fbd.SelectedPath;
+            }
+        };
+        tabDb.Controls.Add(btnBrowseAutoBackup);
+
+        var btnClearAutoBackup = new Button { Text = "Clear", Width = 80, Height = 30, Location = new Point(540, 149) };
+        AppTheme.StyleDangerButton(btnClearAutoBackup);
+        btnClearAutoBackup.Click += (s, e) => _txtAutoBackupDir.Text = "";
+        tabDb.Controls.Add(btnClearAutoBackup);
+
         // --- Bottom Action ---
         var btnSave = new Button { Text = "Save Settings", Width = 150, Height = 45, Location = new Point(20, 590) };
         AppTheme.StylePrimaryButton(btnSave);
@@ -195,6 +226,7 @@ public partial class SettingsForm : Form
         _txtTaxPercent.Text = settings.GetValueOrDefault("TaxPercent", "0");
         _txtReceiptHeader.Text = settings.GetValueOrDefault("ReceiptHeader", "Thank you for shopping!");
         _txtReceiptFooter.Text = settings.GetValueOrDefault("ReceiptFooter", "Please come again");
+        _txtAutoBackupDir.Text = settings.GetValueOrDefault("AutoBackupDirectory", "");
 
         if (settings.TryGetValue("BusinessLogo", out string? logoBase64) && !string.IsNullOrEmpty(logoBase64))
         {
@@ -269,6 +301,7 @@ public partial class SettingsForm : Form
             await _settingService.SetValueAsync("ReceiptHeader", _txtReceiptHeader.Text.Trim());
             await _settingService.SetValueAsync("ReceiptFooter", _txtReceiptFooter.Text.Trim());
             await _settingService.SetValueAsync("BusinessLogo", _currentLogoBase64 ?? "");
+            await _settingService.SetValueAsync("AutoBackupDirectory", _txtAutoBackupDir.Text.Trim());
 
             UIHelper.ShowSuccess("Settings saved successfully.");
         }

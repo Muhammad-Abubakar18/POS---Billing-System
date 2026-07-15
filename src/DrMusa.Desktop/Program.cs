@@ -36,10 +36,26 @@ internal static class Program
             var dbFullPath = Path.GetFullPath(dbPath);
             var connectionString = $"Data Source={dbFullPath}";
 
+            services.AddDrMusaServices(connectionString);
+            ServiceProvider = services.BuildServiceProvider();
+
             // Automatic Backup Logic
             try
             {
-                var backupDir = Path.Combine(Path.GetDirectoryName(dbFullPath)!, "backups");
+                using var scope = ServiceProvider.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<DrMusaDbContext>();
+                
+                string? customBackupDir = null;
+                try
+                {
+                    customBackupDir = db.Settings.FirstOrDefault(s => s.Key == "AutoBackupDirectory")?.Value;
+                }
+                catch { /* Ignore if settings table does not exist yet (first run) */ }
+
+                var backupDir = !string.IsNullOrWhiteSpace(customBackupDir) 
+                    ? customBackupDir 
+                    : Path.Combine(Path.GetDirectoryName(dbFullPath)!, "backups");
+
                 if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
 
                 string todayBackupPath = Path.Combine(backupDir, $"DrMusa_Backup_{DateTime.Now:yyyyMMdd}.db");
@@ -58,10 +74,6 @@ internal static class Program
             {
                 Log.Warning(ex, "Failed to perform automatic database backup.");
             }
-
-            services.AddDrMusaServices(connectionString);
-
-            ServiceProvider = services.BuildServiceProvider();
 
             // Run migrations & seed
             using (var scope = ServiceProvider.CreateScope())
