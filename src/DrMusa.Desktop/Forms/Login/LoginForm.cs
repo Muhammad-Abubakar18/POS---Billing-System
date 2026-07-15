@@ -12,37 +12,45 @@ public sealed class LoginForm : Form
 {
     // ── Services ──────────────────────────────────────────────────────────────
     private readonly IServiceProvider _serviceProvider;
-    private readonly IAuthService     _authService;
+    private readonly IAuthService _authService;
 
     // ── Controls ──────────────────────────────────────────────────────────────
-    private Panel    _leftPanel     = null!;
-    private Panel    _rightPanel    = null!;
-    private Panel    _formCard      = null!;
-    private Label    _lblBrand      = null!;
-    private Label    _lblTagline    = null!;
-    private Label    _lblWelcome    = null!;
-    private Label    _lblSubtitle   = null!;
-    private Label    _lblUsername   = null!;
-    private Panel    _pnlUsername   = null!;
-    private TextBox  _txtUsername   = null!;
-    private Label    _lblPassword   = null!;
-    private Panel    _pnlPassword   = null!;
-    private TextBox  _txtPassword   = null!;
-    private CheckBox _chkRemember   = null!;
-    private Button   _btnLogin      = null!;
-    private Label    _lblError      = null!;
-    private Label    _lblCopyright  = null!;
-    private Label    _lblVersion    = null!;
-    private PictureBox _picLock     = null!;
-    private bool     _passwordVisible = false;
+    private Panel _leftPanel = null!;
+    private Panel _rightPanel = null!;
+    private Panel _formCard = null!;
+    private Label _lblBrand = null!;
+    private Label _lblTagline = null!;
+    private Label _lblWelcome = null!;
+    private Label _lblSubtitle = null!;
+    private Label _lblUsername = null!;
+    private Panel _pnlUsername = null!;
+    private TextBox _txtUsername = null!;
+    private Label _lblPassword = null!;
+    private Panel _pnlPassword = null!;
+    private TextBox _txtPassword = null!;
+    private CheckBox _chkRemember = null!;
+    private Button _btnLogin = null!;
+    private Label _lblError = null!;
+    private Label _lblCopyright = null!;
+    private Label _lblVersion = null!;
+    private PictureBox _picLock = null!;
+    private bool _passwordVisible = false;
+    private Image? _logoImage;
 
     // ── Constructor ───────────────────────────────────────────────────────────
     public LoginForm(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _authService     = serviceProvider.GetRequiredService<IAuthService>();
+        _authService = serviceProvider.GetRequiredService<IAuthService>();
 
         SessionManager.LoadSavedSettings();
+
+        var logoPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.jpg"));
+        if (File.Exists(logoPath))
+        {
+            _logoImage = Image.FromFile(logoPath);
+        }
+
         BuildUI();
         WireEvents();
         PreFillRememberedUser();
@@ -53,14 +61,14 @@ public sealed class LoginForm : Form
     private void BuildUI()
     {
         // Form properties
-        Text            = "DrMusa POS — Login";
-        Size            = new Size(900, 560);
-        MinimumSize     = new Size(900, 560);
-        StartPosition   = FormStartPosition.CenterScreen;
+        Text = "DrMusa POS — Login";
+        Size = new Size(900, 560);
+        MinimumSize = new Size(900, 560);
+        StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.Sizable;
-        MaximizeBox     = true;
-        BackColor       = AppTheme.BackgroundDark;
-        Icon            = SystemIcons.Shield;
+        MaximizeBox = true;
+        BackColor = AppTheme.BackgroundDark;
+        Icon = SystemIcons.Shield;
 
         BuildLeftPanel();
         BuildRightPanel();
@@ -80,17 +88,17 @@ public sealed class LoginForm : Form
             RowCount = 3,
             BackColor = Color.Transparent
         };
-        
+
         rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         rootGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-        
+
         rootGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
         rootGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         rootGrid.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
         rootGrid.Controls.Add(centerContainer, 1, 1);
-        
+
         Controls.Add(rootGrid);
         _rightPanel.BringToFront();
     }
@@ -101,8 +109,8 @@ public sealed class LoginForm : Form
     {
         _leftPanel = new Panel
         {
-            Size      = new Size(370, 560),
-            Location  = new Point(0, 0),
+            Size = new Size(370, 560),
+            Location = new Point(0, 0),
             BackColor = AppTheme.BackgroundPanel
         };
         _leftPanel.Paint += LeftPanel_Paint;
@@ -110,34 +118,34 @@ public sealed class LoginForm : Form
         // Shield / lock icon (text-based, elegant)
         _picLock = new PictureBox
         {
-            Size     = new Size(72, 72),
-            Location = new Point(149, 140),
+            Size = new Size(120, 120),
+            Location = new Point(125, 80),
             BackColor = Color.Transparent
         };
         _picLock.Paint += PicLock_Paint;
 
         _lblBrand = new Label
         {
-            Text      = "DrMusa",
-            Font      = AppTheme.FontDisplay,
-            ForeColor = AppTheme.TextPrimary,
+            Text = "Dr. Musa",
+            Font = AppTheme.FontDisplay,
+            ForeColor = Color.White,
             BackColor = Color.Transparent,
-            AutoSize  = false,
-            Size      = new Size(370, 50),
+            AutoSize = false,
+            Size = new Size(370, 50),
             TextAlign = ContentAlignment.MiddleCenter,
-            Location  = new Point(0, 220)
+            Location = new Point(0, 220)
         };
 
         _lblTagline = new Label
         {
-            Text      = "Point of Sale System",
-            Font      = new Font("Segoe UI", 10f, FontStyle.Regular),
-            ForeColor = AppTheme.TextPrimary,
+            Text = "Point of Sale System",
+            Font = new Font("Segoe UI", 10f, FontStyle.Regular),
+            ForeColor = Color.WhiteSmoke,
             BackColor = Color.Transparent,
-            AutoSize  = false,
-            Size      = new Size(370, 30),
+            AutoSize = false,
+            Size = new Size(370, 30),
             TextAlign = ContentAlignment.MiddleCenter,
-            Location  = new Point(0, 268)
+            Location = new Point(0, 268)
         };
 
         // Feature pills
@@ -146,12 +154,12 @@ public sealed class LoginForm : Form
         {
             var pill = new Label
             {
-                Text      = feature,
-                Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
-                ForeColor = AppTheme.TextPrimary,
+                Text = feature,
+                Font = new Font("Segoe UI", 9f, FontStyle.Regular),
+                ForeColor = Color.White,
                 BackColor = Color.Transparent,
-                AutoSize  = true,
-                Location  = new Point(110, pillY)
+                AutoSize = true,
+                Location = new Point(110, pillY)
             };
             _leftPanel.Controls.Add(pill);
             pillY += 28;
@@ -159,12 +167,12 @@ public sealed class LoginForm : Form
 
         _lblVersion = new Label
         {
-            Text      = "Version 1.0",
-            Font      = AppTheme.FontCaption,
-            ForeColor = AppTheme.TextMuted,
+            Text = "Version 1.0",
+            Font = AppTheme.FontCaption,
+            ForeColor = Color.LightGray,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(148, 490)
+            AutoSize = true,
+            Location = new Point(148, 490)
         };
 
         _leftPanel.Controls.AddRange(new Control[]
@@ -176,11 +184,11 @@ public sealed class LoginForm : Form
         var g = e.Graphics;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-        // Subtle gradient overlay
+        // Teal gradient overlay matching the logo
         using var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
             new Rectangle(0, 0, 370, 560),
-            AppTheme.BackgroundPanel,
-            AppTheme.ColorFromHex("#131628"),
+            AppTheme.AccentPrimary,
+            AppTheme.ColorFromHex("#033036"),
             System.Drawing.Drawing2D.LinearGradientMode.Vertical);
         g.FillRectangle(brush, 0, 0, 370, 560);
 
@@ -202,22 +210,37 @@ public sealed class LoginForm : Form
         var g = e.Graphics;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-        // Circular background
-        using var bgBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
-            new Rectangle(0, 0, 72, 72),
-            AppTheme.AccentPrimary,
-            AppTheme.AccentHover,
-            45f);
-        g.FillEllipse(bgBrush, 2, 2, 68, 68);
+        if (_logoImage != null)
+        {
+            // Draw logo in a perfect circle
+            using var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddEllipse(0, 0, 120, 120);
+            g.SetClip(path);
+            g.DrawImage(_logoImage, 0, 0, 120, 120);
+            g.ResetClip();
 
-        // Simple "P" for POS as elegant icon text
-        using var font = new Font("Segoe UI", 28f, FontStyle.Bold);
-        using var textBrush = new SolidBrush(Color.White);
-        var text = "D";
-        var size = g.MeasureString(text, font);
-        g.DrawString(text, font, textBrush,
-            (72 - size.Width) / 2f,
-            (72 - size.Height) / 2f);
+            // Draw a thin border ring around it
+            using var ringPen = new Pen(Color.White, 2f);
+            g.DrawEllipse(ringPen, 1, 1, 118, 118);
+        }
+        else
+        {
+            // Circular background fallback
+            using var bgBrush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                new Rectangle(0, 0, 120, 120),
+                AppTheme.AccentPrimary,
+                AppTheme.AccentHover,
+                45f);
+            g.FillEllipse(bgBrush, 2, 2, 116, 116);
+
+            using var font = new Font("Segoe UI", 48f, FontStyle.Bold);
+            using var textBrush = new SolidBrush(Color.White);
+            var text = "D";
+            var size = g.MeasureString(text, font);
+            g.DrawString(text, font, textBrush,
+                (120 - size.Width) / 2f,
+                (120 - size.Height) / 2f);
+        }
     }
 
     // ── Right Login Panel ─────────────────────────────────────────────────────
@@ -226,16 +249,16 @@ public sealed class LoginForm : Form
     {
         _rightPanel = new Panel
         {
-            Size      = new Size(530, 560),
-            Location  = new Point(370, 0),
+            Size = new Size(530, 560),
+            Location = new Point(370, 0),
             BackColor = AppTheme.BackgroundDark
         };
 
         // Center card
         _formCard = new Panel
         {
-            Size      = new Size(380, 440),
-            Location  = new Point(75, 60),
+            Size = new Size(380, 440),
+            Location = new Point(75, 60),
             BackColor = AppTheme.BackgroundPanel
         };
         _formCard.Paint += FormCard_Paint;
@@ -243,68 +266,68 @@ public sealed class LoginForm : Form
         // Welcome heading
         _lblWelcome = new Label
         {
-            Text      = "Welcome Back",
-            Font      = AppTheme.FontTitle,
+            Text = "Welcome Back",
+            Font = AppTheme.FontTitle,
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 35)
+            AutoSize = true,
+            Location = new Point(30, 35)
         };
 
         _lblSubtitle = new Label
         {
-            Text      = "Sign in to your account to continue",
-            Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
+            Text = "Sign in to your account to continue",
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 68)
+            AutoSize = true,
+            Location = new Point(30, 68)
         };
 
         // Username field
         _lblUsername = new Label
         {
-            Text      = "USERNAME",
-            Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
+            Text = "USERNAME",
+            Font = new Font("Segoe UI", 7.5f, FontStyle.Bold),
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 110)
+            AutoSize = true,
+            Location = new Point(30, 110)
         };
 
         _txtUsername = new TextBox { TabIndex = 0 };
         _pnlUsername = AppTheme.WrapInputPanel(_txtUsername, "Enter your username");
-        _pnlUsername.Size     = new Size(320, 44);
+        _pnlUsername.Size = new Size(320, 44);
         _pnlUsername.Location = new Point(30, 128);
 
         // Password field
         _lblPassword = new Label
         {
-            Text      = "PASSWORD",
-            Font      = new Font("Segoe UI", 7.5f, FontStyle.Bold),
+            Text = "PASSWORD",
+            Font = new Font("Segoe UI", 7.5f, FontStyle.Bold),
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 190)
+            AutoSize = true,
+            Location = new Point(30, 190)
         };
 
         _txtPassword = new TextBox { TabIndex = 1, PasswordChar = '●' };
         _pnlPassword = AppTheme.WrapInputPanel(_txtPassword, "");
-        _pnlPassword.Size     = new Size(320, 44);
+        _pnlPassword.Size = new Size(320, 44);
         _pnlPassword.Location = new Point(30, 208);
 
         // Toggle password visibility button
         var btnTogglePass = new Button
         {
-            Text      = "👁",
-            Size      = new Size(36, 36),
-            Location  = new Point(280, 4),
+            Text = "👁",
+            Size = new Size(36, 36),
+            Location = new Point(280, 4),
             FlatStyle = FlatStyle.Flat,
             BackColor = AppTheme.BackgroundCard,
             ForeColor = AppTheme.TextPrimary,
-            Cursor    = Cursors.Hand,
-            Font      = new Font("Segoe UI Emoji", 11f),
-            TabStop   = false
+            Cursor = Cursors.Hand,
+            Font = new Font("Segoe UI Emoji", 11f),
+            TabStop = false
         };
         btnTogglePass.FlatAppearance.BorderSize = 0;
         btnTogglePass.Click += (s, e) =>
@@ -319,27 +342,27 @@ public sealed class LoginForm : Form
         // Error label
         _lblError = new Label
         {
-            Text      = "",
-            Font      = new Font("Segoe UI", 8.5f, FontStyle.Regular),
+            Text = "",
+            Font = new Font("Segoe UI", 8.5f, FontStyle.Regular),
             ForeColor = AppTheme.AccentDanger,
             BackColor = Color.Transparent,
-            AutoSize  = false,
-            Size      = new Size(320, 20),
-            Location  = new Point(30, 260),
+            AutoSize = false,
+            Size = new Size(320, 20),
+            Location = new Point(30, 260),
             TextAlign = ContentAlignment.MiddleLeft
         };
 
         // Remember Me checkbox
         _chkRemember = new CheckBox
         {
-            Text      = "Remember me",
-            Font      = new Font("Segoe UI", 9f, FontStyle.Regular),
+            Text = "Remember me",
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
             ForeColor = AppTheme.TextPrimary,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 286),
-            Cursor    = Cursors.Hand,
-            TabIndex  = 2
+            AutoSize = true,
+            Location = new Point(30, 286),
+            Cursor = Cursors.Hand,
+            TabIndex = 2
         };
         StyleCheckbox(_chkRemember);
 
@@ -360,24 +383,24 @@ public sealed class LoginForm : Form
         // Login button
         _btnLogin = new Button
         {
-            Text      = "Sign In",
-            Size      = new Size(320, 48),
-            Location  = new Point(30, 326),
-            TabIndex  = 3
+            Text = "Sign In",
+            Size = new Size(320, 48),
+            Location = new Point(30, 326),
+            TabIndex = 3
         };
         AppTheme.StylePrimaryButton(_btnLogin);
         _btnLogin.Height = 48;
-        _btnLogin.Font   = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+        _btnLogin.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
 
         // Copyright
         _lblCopyright = new Label
         {
-            Text      = "© 2025 DrMusa. All rights reserved.",
-            Font      = AppTheme.FontCaption,
+            Text = "© 2025 DrMusa. All rights reserved.",
+            Font = AppTheme.FontCaption,
             ForeColor = AppTheme.TextMuted,
             BackColor = Color.Transparent,
-            AutoSize  = true,
-            Location  = new Point(30, 400)
+            AutoSize = true,
+            Location = new Point(30, 400)
         };
 
         _formCard.Controls.AddRange(new Control[]
@@ -426,7 +449,7 @@ public sealed class LoginForm : Form
 
     private void WireEvents()
     {
-        _btnLogin.Click  += BtnLogin_Click;
+        _btnLogin.Click += BtnLogin_Click;
         _txtPassword.KeyDown += (s, e) =>
         {
             if (e.KeyCode == Keys.Enter) _ = PerformLoginAsync();
@@ -441,7 +464,7 @@ public sealed class LoginForm : Form
     {
         if (!string.IsNullOrEmpty(SessionManager.RememberedUsername))
         {
-            _txtUsername.Text    = SessionManager.RememberedUsername;
+            _txtUsername.Text = SessionManager.RememberedUsername;
             _txtUsername.ForeColor = AppTheme.TextPrimary;
             _chkRemember.Checked = true;
             _txtPassword.Focus();
@@ -462,7 +485,7 @@ public sealed class LoginForm : Form
         var userService = _serviceProvider.GetRequiredService<DrMusa.Business.Interfaces.IUserService>();
         var users = await userService.GetAllAsync();
         var user = users.FirstOrDefault(u => string.Equals(u.Username, username, StringComparison.OrdinalIgnoreCase));
-        
+
         if (user == null)
         {
             ShowError("Username not found.");
@@ -483,7 +506,7 @@ public sealed class LoginForm : Form
         _lblError.Text = "";
 
         var username = _txtUsername.Text.Trim();
-        var password  = _txtPassword.Text;
+        var password = _txtPassword.Text;
 
         // Client-side validation
         if (string.IsNullOrWhiteSpace(username) || username == "Enter your username")
@@ -520,7 +543,7 @@ public sealed class LoginForm : Form
 
             // Navigate to main shell
             var mainForm = new Forms.Dashboard.MainForm(_serviceProvider);
-            mainForm.FormClosed += (_, __) => 
+            mainForm.FormClosed += (_, __) =>
             {
                 if (!SessionManager.IsLoggedIn)
                 {
@@ -549,16 +572,16 @@ public sealed class LoginForm : Form
 
     private void ShowError(string message)
     {
-        _lblError.Text      = "⚠  " + message;
+        _lblError.Text = "⚠  " + message;
         _lblError.ForeColor = AppTheme.AccentDanger;
     }
 
     private void SetFormEnabled(bool enabled)
     {
-        _txtUsername.Enabled  = enabled;
-        _txtPassword.Enabled  = enabled;
-        _btnLogin.Enabled     = enabled;
-        _chkRemember.Enabled  = enabled;
+        _txtUsername.Enabled = enabled;
+        _txtPassword.Enabled = enabled;
+        _btnLogin.Enabled = enabled;
+        _chkRemember.Enabled = enabled;
     }
 
     // ── Keyboard shortcut: Enter to login ─────────────────────────────────────
