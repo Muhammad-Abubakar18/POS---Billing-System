@@ -10,4 +10,10 @@ public interface IReportService
     Task<IEnumerable<InventoryReportDto>> GetLowStockReportAsync();
     Task<decimal> GetTotalSalesForPeriodAsync(DateTime startDate, DateTime endDate);
     Task<decimal> GetTotalProfitForPeriodAsync(DateTime startDate, DateTime endDate);
+
+    // Dashboard Analytics Methods
+    Task<DashboardSummaryDto> GetDashboardSummaryAsync(DateTime startDate, DateTime endDate);
+    Task<IEnumerable<ProductChartDto>> GetTopSellingProductsAsync(DateTime startDate, DateTime endDate, int count);
+    Task<IEnumerable<ProductChartDto>> GetLowSellingProductsAsync(DateTime startDate, DateTime endDate, int count);
+    Task<IEnumerable<ProfitTrendDto>> GetProfitTrendAsync(DateTime startDate, DateTime endDate, ReportGroupingType grouping);
 }
