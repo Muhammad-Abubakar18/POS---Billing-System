@@ -99,15 +99,23 @@ public static class AppTheme
         var wrapper = new Panel
         {
             BackColor = BackgroundInput,
-            Padding = new Padding(12, 0, 12, 0),
             Height = 44
         };
 
-        textBox.Dock = DockStyle.Fill;
-        textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-        textBox.TextAlign = HorizontalAlignment.Left;
+        // Do not use Dock.Fill for single-line textboxes to avoid clipping issues.
+        // Instead, manually center it vertically when the wrapper resizes.
+        void UpdateTextBoxBounds()
+        {
+            textBox.Width = wrapper.Width - 24; // 12px padding on each side
+            textBox.Location = new Point(12, (wrapper.Height - textBox.Height) / 2);
+        }
+        
+        wrapper.Resize += (s, e) => UpdateTextBoxBounds();
+        UpdateTextBoxBounds(); // Initial position
 
         wrapper.Controls.Add(textBox);
+        wrapper.Click += (s, e) => textBox.Focus();
+        wrapper.GotFocus += (s, e) => textBox.Focus();
         wrapper.Paint += (s, e) =>
         {
             var panel = (Panel)s!;

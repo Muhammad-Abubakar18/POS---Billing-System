@@ -14,8 +14,8 @@ public class CreateSaleValidator : AbstractValidator<CreateSaleDto>
             .Must(items => items.All(i => i.UnitPrice > 0))
                 .WithMessage("All item unit prices must be greater than 0.");
 
-        RuleFor(x => x.DiscountPercent)
-            .InclusiveBetween(0, 100).WithMessage("Discount must be between 0 and 100%.");
+        RuleFor(x => x.DiscountAmount)
+            .GreaterThanOrEqualTo(0).WithMessage("Discount amount cannot be negative.");
 
         RuleFor(x => x.TaxPercent)
             .InclusiveBetween(0, 100).WithMessage("Tax must be between 0 and 100%.");

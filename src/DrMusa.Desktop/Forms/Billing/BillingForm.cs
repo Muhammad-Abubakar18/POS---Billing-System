@@ -156,15 +156,29 @@ public partial class BillingForm : Form
 
         _lblSubTotal = new Label { Text = "SubTotal: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Margin = new Padding(0, 0, 0, 10) };
 
+        Panel CreateLabeledField(string labelText, Control inputPanel, int width)
+        {
+            var pnl = new Panel { Width = width, Height = 66, Margin = new Padding(0, 0, 5, 0) };
+            var lbl = new Label { Text = labelText, ForeColor = AppTheme.TextSecondary, Font = new Font("Segoe UI", 8f), Location = new Point(0, 0), AutoSize = true };
+            pnl.Controls.Add(lbl);
+            inputPanel.Location = new Point(0, 20);
+            inputPanel.Width = width;
+            pnl.Controls.Add(inputPanel);
+            
+            // Forward clicks to the input panel so it focuses the textbox inside
+            pnl.Click += (s, e) => inputPanel.Focus();
+            lbl.Click += (s, e) => inputPanel.Focus();
+            
+            return pnl;
+        }
+
         _txtDiscount = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right };
         _txtDiscount.TextChanged += (s, e) => CalculateTotals();
-        var pnlDisc = AppTheme.WrapInputPanel(_txtDiscount, "Disc %");
-        pnlDisc.Width = 100;
+        var pnlDisc = CreateLabeledField("Disc Amt", AppTheme.WrapInputPanel(_txtDiscount, ""), 90);
 
-        _txtTax = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right };
+        _txtTax = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right, ReadOnly = true };
         _txtTax.TextChanged += (s, e) => CalculateTotals();
-        var pnlTax = AppTheme.WrapInputPanel(_txtTax, "Tax %");
-        pnlTax.Width = 100;
+        var pnlTax = CreateLabeledField("Tax %", AppTheme.WrapInputPanel(_txtTax, ""), 90);
 
         var cmbOrderType = new ComboBox { Width = 100, DropDownStyle = ComboBoxStyle.DropDownList, Font = new Font("Segoe UI", 10f), Location = new Point(0, 20) };
         cmbOrderType.Items.AddRange(new[] { "Dine In", "Takeaway", "Delivery" });
@@ -189,10 +203,9 @@ public partial class BillingForm : Form
         AppTheme.StyleSecondaryButton(_btnCard);
         _btnCard.Click += (s, e) => SelectPayment(PaymentMethod.Card);
 
-        _txtPaidAmount = new TextBox { Width = 90, Text = "0", TextAlign = HorizontalAlignment.Right };
+        _txtPaidAmount = new TextBox { Width = 80, Text = "0", TextAlign = HorizontalAlignment.Right };
         _txtPaidAmount.TextChanged += (s, e) => CalculateTotals();
-        var pnlPaid = AppTheme.WrapInputPanel(_txtPaidAmount, "Paid Amt");
-        pnlPaid.Width = 110;
+        var pnlPaid = CreateLabeledField("Paid Amt", AppTheme.WrapInputPanel(_txtPaidAmount, ""), 90);
 
         _lblChange = new Label { Text = "Change: 0.00", Font = new Font("Segoe UI", 12f), ForeColor = AppTheme.TextSecondary, AutoSize = true, Padding = new Padding(0, 10, 0, 0) };
 
@@ -223,6 +236,11 @@ public partial class BillingForm : Form
         {
             _categories = (await _categoryService.GetAllAsync()).ToList();
             _allProducts = (await _productService.GetAllAsync()).ToList();
+
+            var settingService = _serviceProvider.GetRequiredService<DrMusa.Business.Interfaces.ISettingService>();
+            var settingsList = await settingService.GetAllAsync();
+            var settings = settingsList.ToDictionary(s => s.Key, s => s.Value);
+            _txtTax.Text = settings.GetValueOrDefault("TaxPercent", "0");
 
             BuildCategoryTabs();
             FilterProducts();
@@ -435,12 +453,11 @@ public partial class BillingForm : Form
         decimal subTotal = _cart.Sum(c => c.Total);
         _lblSubTotal.Text = $"SubTotal: {UIHelper.FormatCurrency(subTotal)}";
 
-        decimal.TryParse(_txtDiscount.Text, out decimal discPct);
+        decimal.TryParse(_txtDiscount.Text, out decimal discAmt);
         decimal.TryParse(_txtTax.Text, out decimal taxPct);
         decimal.TryParse(_txtPaidAmount.Text, out decimal paid);
 
-        decimal discAmt = subTotal * (discPct / 100);
-        decimal taxAmt = (subTotal - discAmt) * (taxPct / 100);
+        decimal taxAmt = subTotal * (taxPct / 100);
         decimal total = subTotal - discAmt + taxAmt;
 
         _lblTotal.Text = $"Total: {UIHelper.FormatCurrency(total)}";
@@ -473,9 +490,35 @@ public partial class BillingForm : Form
             return;
         }
 
-        decimal.TryParse(_txtDiscount.Text, out decimal discPct);
-        decimal.TryParse(_txtTax.Text, out decimal taxPct);
+        var confirm = MessageBox.Show(
+            "Are you sure you want to complete this order?", 
+            "Confirm Order", 
+            MessageBoxButtons.YesNo, 
+            MessageBoxIcon.Question);
+            
+        if (confirm == DialogResult.No)
+        {
+            return;
+        }
+
+        decimal.TryParse(_txtDiscount.Text, out decimal discAmt);
         decimal.TryParse(_txtPaidAmount.Text, out decimal paid);
+
+        if (!decimal.TryParse(_txtTax.Text, out decimal taxPct) || taxPct < 0 || taxPct > 100)
+        {
+            UIHelper.ShowError("Sale Tax must be between 0 and 100.");
+            return;
+        }
+        
+        decimal subTotal = _cart.Sum(c => c.Total);
+        decimal taxAmt = subTotal * (taxPct / 100);
+        decimal total = subTotal - discAmt + taxAmt;
+        
+        if (total <= 0)
+        {
+            UIHelper.ShowError("Negative or zero amount can't be billed. Please check the discount amount.");
+            return;
+        }
 
         bool printReceipt = true;
         var dr1 = MessageBox.Show("Do you want to print a receipt?", "Print Receipt", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -492,7 +535,7 @@ public partial class BillingForm : Form
             CustomerId: null,
             UserId: SessionManager.CurrentUserId ?? 1,
             Items: _cart.Select(c => new CreateSaleItemDto(c.ProductId, c.Quantity, c.UnitPrice, 0)).ToList(),
-            DiscountPercent: discPct,
+            DiscountAmount: discAmt,
             TaxPercent: taxPct,
             PaidAmount: paid,
             PaymentMethod: _selectedPayment,

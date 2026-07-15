@@ -249,7 +249,8 @@ public class ReceiptPrinter
 
         if (_sale.TaxAmount > 0)
         {
-            DrawLeftRight("Tax:", $"{_currency} {_sale.TaxAmount:0.00}", fontBody);
+            string taxLabel = _sale.TaxPercent > 0 ? $"Tax ({_sale.TaxPercent:0}%):" : "Tax:";
+            DrawLeftRight(taxLabel, $"{_currency} {_sale.TaxAmount:0.00}", fontBody);
         }
 
         y += 5;

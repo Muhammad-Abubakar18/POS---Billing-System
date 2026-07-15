@@ -67,9 +67,20 @@ public class SaleService : ISaleService
             });
         }
 
-        var discountAmt = subTotal * dto.DiscountPercent / 100;
-        var taxAmt = (subTotal - discountAmt) * dto.TaxPercent / 100;
+        var discountAmt = dto.DiscountAmount;
+        if (discountAmt > subTotal)
+        {
+            throw new InvalidOperationException("Discount amount cannot be greater than subtotal.");
+        }
+
+        var taxAmt = subTotal * dto.TaxPercent / 100;
         var total = subTotal - discountAmt + taxAmt;
+        
+        if (total <= 0)
+        {
+            throw new InvalidOperationException("Total amount must be greater than zero.");
+        }
+        
         var change = dto.PaidAmount - total;
 
         var sale = new Sale
@@ -79,7 +90,7 @@ public class SaleService : ISaleService
             UserId = dto.UserId,
             SaleDate = DateTime.Now,
             SubTotal = subTotal,
-            DiscountPercent = dto.DiscountPercent,
+            DiscountPercent = 0, // No longer using percent
             DiscountAmount = discountAmt,
             TaxPercent = dto.TaxPercent,
             TaxAmount = taxAmt,
@@ -186,7 +197,7 @@ public class SaleService : ISaleService
         s.Id, s.InvoiceNumber,
         s.CustomerId, s.Customer?.Name,
         s.SaleDate, s.SubTotal,
-        s.DiscountAmount, s.TaxAmount,
+        s.DiscountAmount, s.TaxPercent, s.TaxAmount,
         s.TotalAmount, s.PaidAmount, s.ChangeAmount,
         s.PaymentMethod, s.OrderType, s.Status, s.HasReceipt,
         s.SaleItems.Select(si => new SaleItemDto(

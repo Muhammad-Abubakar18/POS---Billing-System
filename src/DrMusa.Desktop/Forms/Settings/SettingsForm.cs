@@ -245,6 +245,20 @@ public partial class SettingsForm : Form
 
     private async Task SaveSettingsAsync()
     {
+        if (decimal.TryParse(_txtTaxPercent.Text.Trim(), out decimal tax))
+        {
+            if (tax < 0 || tax > 100)
+            {
+                UIHelper.ShowError("Sale Tax must be between 0 and 100.");
+                return;
+            }
+        }
+        else
+        {
+            UIHelper.ShowError("Invalid Sale Tax percentage.");
+            return;
+        }
+
         try
         {
             await _settingService.SetValueAsync("BusinessName", _txtBusinessName.Text.Trim());
