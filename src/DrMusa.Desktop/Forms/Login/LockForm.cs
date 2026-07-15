@@ -172,6 +172,29 @@ public sealed class LockForm : Form
         _btnLogout.MouseLeave += (s, e) => _btnLogout.ForeColor = AppTheme.TextSecondary;
         _btnLogout.Click += BtnLogout_Click;
 
+        var lnkForgot = new LinkLabel
+        {
+            Text = "Forgot Password?",
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
+            LinkColor = AppTheme.AccentPrimary,
+            ActiveLinkColor = AppTheme.AccentHover,
+            BackColor = Color.Transparent,
+            AutoSize = true,
+            Location = new Point(190, 475),
+            Cursor = Cursors.Hand
+        };
+        lnkForgot.LinkClicked += (s, e) => 
+        {
+            if (!SessionManager.CurrentUserId.HasValue) return;
+            using var recoveryForm = new PasswordRecoveryForm(_serviceProvider, SessionManager.CurrentUserId.Value, SessionManager.CurrentUsername!);
+            if (recoveryForm.ShowDialog(this) == DialogResult.OK)
+            {
+                // If reset successful, they can now unlock with new password
+                _txtPassword.Text = "";
+                _txtPassword.Focus();
+            }
+        };
+
         // ── Wire keyboard ─────────────────────────────────────────────────────
         _txtPassword.KeyDown += (s, e) =>
         {
@@ -182,7 +205,9 @@ public sealed class LockForm : Form
         {
             picIcon, lblLocked, _lblUser, sep,
             lblPass, pnlPass, _lblError,
-            _btnUnlock, _btnLogout
+            _btnUnlock,
+            _btnLogout,
+            lnkForgot
         });
 
         _txtPassword.Focus();

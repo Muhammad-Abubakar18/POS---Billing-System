@@ -26,6 +26,16 @@ public partial class SettingsForm : Form
     private PictureBox _picLogo = null!;
     private string? _currentLogoBase64;
     private TextBox _txtAutoBackupDir = null!;
+    private Label _lblLastBackup = null!;
+
+    // Security Controls
+    private ComboBox _cmbQ1 = null!;
+    private TextBox _txtA1 = null!;
+    private ComboBox _cmbQ2 = null!;
+    private TextBox _txtA2 = null!;
+    private ComboBox _cmbQ3 = null!;
+    private TextBox _txtA3 = null!;
+    private TextBox _txtMasterKey = null!;
 
     public SettingsForm(IServiceProvider serviceProvider)
     {
@@ -208,6 +218,87 @@ public partial class SettingsForm : Form
         btnClearAutoBackup.Click += (s, e) => _txtAutoBackupDir.Text = "";
         tabDb.Controls.Add(btnClearAutoBackup);
 
+        // --- Tab: Admin Security ---
+        var tabSecurity = new TabPage("Admin Security");
+        tabSecurity.BackColor = AppTheme.BackgroundPanel;
+
+        var lblSecInfo = new Label
+        {
+            Text = "Configure Password Recovery options. These are used if you forget your password.",
+            Font = new Font("Segoe UI", 11f),
+            ForeColor = AppTheme.TextPrimary,
+            AutoSize = true,
+            Location = new Point(20, 20)
+        };
+        tabSecurity.Controls.Add(lblSecInfo);
+
+        string[] questions = new[]
+        {
+            "What city were you born in?",
+            "What is your mother's maiden name?",
+            "What was the name of your first pet?",
+            "What was the name of your first school?",
+            "What is your favorite childhood friend's name?"
+        };
+
+        _cmbQ1 = new ComboBox { Width = 300, Location = new Point(20, 70), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ1.Items.AddRange(questions);
+        _txtA1 = new TextBox { Width = 300, Location = new Point(340, 70), Font = new Font("Segoe UI", 11f) };
+
+        _cmbQ2 = new ComboBox { Width = 300, Location = new Point(20, 120), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ2.Items.AddRange(questions);
+        _txtA2 = new TextBox { Width = 300, Location = new Point(340, 120), Font = new Font("Segoe UI", 11f) };
+
+        _cmbQ3 = new ComboBox { Width = 300, Location = new Point(20, 170), Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbQ3.Items.AddRange(questions);
+        _txtA3 = new TextBox { Width = 300, Location = new Point(340, 170), Font = new Font("Segoe UI", 11f) };
+
+        tabSecurity.Controls.Add(new Label { Text = "Question 1:", Location = new Point(20, 50), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_cmbQ1);
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 50), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_txtA1);
+
+        tabSecurity.Controls.Add(new Label { Text = "Question 2:", Location = new Point(20, 100), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_cmbQ2);
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 100), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_txtA2);
+
+        tabSecurity.Controls.Add(new Label { Text = "Question 3:", Location = new Point(20, 150), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_cmbQ3);
+        tabSecurity.Controls.Add(new Label { Text = "Answer (Leave empty to keep existing):", Location = new Point(340, 150), ForeColor = AppTheme.TextPrimary, AutoSize = true });
+        tabSecurity.Controls.Add(_txtA3);
+
+        var lblMasterKey = new Label { Text = "Master Recovery Key (Write this down!):", Location = new Point(20, 240), ForeColor = AppTheme.TextPrimary, AutoSize = true };
+        tabSecurity.Controls.Add(lblMasterKey);
+
+        _txtMasterKey = new TextBox { Width = 300, Location = new Point(20, 260), Font = new Font("Segoe UI", 11.5f, FontStyle.Bold), ReadOnly = true };
+        tabSecurity.Controls.Add(_txtMasterKey);
+
+        var btnGenerateKey = new Button { Text = "Generate New Key", Width = 150, Height = 32, Location = new Point(340, 259) };
+        AppTheme.StyleDangerButton(btnGenerateKey);
+        btnGenerateKey.Click += (s, e) =>
+        {
+            var confirm = MessageBox.Show("Generating a new key will invalidate any old key. Continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirm == DialogResult.Yes)
+            {
+                _txtMasterKey.Text = "DRMUSA-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper() + "-" + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+            }
+        };
+        tabSecurity.Controls.Add(btnGenerateKey);
+
+        tabs.TabPages.Add(tabSecurity);
+
+        // Last Backup Label
+        _lblLastBackup = new Label
+        {
+            Text = "Last Backup Taken: Checking...",
+            Font = new Font("Segoe UI", 10f, FontStyle.Italic),
+            ForeColor = AppTheme.TextSecondary,
+            AutoSize = true,
+            Location = new Point(20, 185)
+        };
+        tabDb.Controls.Add(_lblLastBackup);
+
         // --- Bottom Action ---
         var btnSave = new Button { Text = "Save Settings", Width = 150, Height = 45, Location = new Point(20, 590) };
         AppTheme.StylePrimaryButton(btnSave);
@@ -228,16 +319,52 @@ public partial class SettingsForm : Form
         _txtReceiptFooter.Text = settings.GetValueOrDefault("ReceiptFooter", "Please come again");
         _txtAutoBackupDir.Text = settings.GetValueOrDefault("AutoBackupDirectory", "");
 
+        if (settings.TryGetValue("AdminRecoveryQ1", out string? q1) && !string.IsNullOrEmpty(q1)) _cmbQ1.SelectedItem = q1;
+        if (settings.TryGetValue("AdminRecoveryQ2", out string? q2) && !string.IsNullOrEmpty(q2)) _cmbQ2.SelectedItem = q2;
+        if (settings.TryGetValue("AdminRecoveryQ3", out string? q3) && !string.IsNullOrEmpty(q3)) _cmbQ3.SelectedItem = q3;
+        // Do NOT populate answers or master key for security reasons. Only save if they are changed.
+
         if (settings.TryGetValue("BusinessLogo", out string? logoBase64) && !string.IsNullOrEmpty(logoBase64))
         {
             try
             {
-                _currentLogoBase64 = logoBase64;
                 var bytes = Convert.FromBase64String(logoBase64);
                 using var ms = new MemoryStream(bytes);
                 _picLogo.Image = Image.FromStream(ms);
+                _currentLogoBase64 = logoBase64;
             }
-            catch { /* Invalid logo data */ }
+            catch { }
+        }
+
+        RefreshLastBackupTime();
+    }
+
+    private void RefreshLastBackupTime()
+    {
+        try
+        {
+            var dbPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "database", "DrMusa.db"));
+            var defaultBackupDir = Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
+            
+            string searchDir = !string.IsNullOrWhiteSpace(_txtAutoBackupDir.Text) && Directory.Exists(_txtAutoBackupDir.Text)
+                ? _txtAutoBackupDir.Text 
+                : defaultBackupDir;
+
+            if (Directory.Exists(searchDir))
+            {
+                var files = Directory.GetFiles(searchDir, "*.db");
+                if (files.Length > 0)
+                {
+                    var lastFile = files.Select(f => new FileInfo(f)).OrderByDescending(f => f.CreationTime).First();
+                    _lblLastBackup.Text = $"Last Backup Taken: {lastFile.CreationTime:dddd, MMMM dd, yyyy 'at' hh:mm tt}";
+                    return;
+                }
+            }
+            _lblLastBackup.Text = "Last Backup Taken: No backups found.";
+        }
+        catch 
+        {
+            _lblLastBackup.Text = "Last Backup Taken: Unable to read directory.";
         }
     }
 
@@ -303,6 +430,26 @@ public partial class SettingsForm : Form
             await _settingService.SetValueAsync("BusinessLogo", _currentLogoBase64 ?? "");
             await _settingService.SetValueAsync("AutoBackupDirectory", _txtAutoBackupDir.Text.Trim());
 
+            // Save Security Questions
+            if (_cmbQ1.SelectedItem != null) await _settingService.SetValueAsync("AdminRecoveryQ1", _cmbQ1.SelectedItem.ToString()!);
+            if (_cmbQ2.SelectedItem != null) await _settingService.SetValueAsync("AdminRecoveryQ2", _cmbQ2.SelectedItem.ToString()!);
+            if (_cmbQ3.SelectedItem != null) await _settingService.SetValueAsync("AdminRecoveryQ3", _cmbQ3.SelectedItem.ToString()!);
+
+            // Only hash and save if they actually entered a new answer
+            if (!string.IsNullOrWhiteSpace(_txtA1.Text))
+                await _settingService.SetValueAsync("AdminRecoveryA1Hash", DrMusa.Common.Utilities.PasswordHelper.HashPassword(_txtA1.Text.Trim().ToLower()));
+            if (!string.IsNullOrWhiteSpace(_txtA2.Text))
+                await _settingService.SetValueAsync("AdminRecoveryA2Hash", DrMusa.Common.Utilities.PasswordHelper.HashPassword(_txtA2.Text.Trim().ToLower()));
+            if (!string.IsNullOrWhiteSpace(_txtA3.Text))
+                await _settingService.SetValueAsync("AdminRecoveryA3Hash", DrMusa.Common.Utilities.PasswordHelper.HashPassword(_txtA3.Text.Trim().ToLower()));
+
+            // Only hash and save if they generated a new key
+            if (!string.IsNullOrWhiteSpace(_txtMasterKey.Text))
+                await _settingService.SetValueAsync("AdminRecoveryMasterKeyHash", DrMusa.Common.Utilities.PasswordHelper.HashPassword(_txtMasterKey.Text.Trim()));
+
+            // Clear textboxes so they don't sit in plain text
+            _txtA1.Text = ""; _txtA2.Text = ""; _txtA3.Text = ""; _txtMasterKey.Text = "";
+
             UIHelper.ShowSuccess("Settings saved successfully.");
         }
         catch (Exception ex)
@@ -313,6 +460,26 @@ public partial class SettingsForm : Form
 
     private void BtnBackup_Click(object? sender, EventArgs e)
     {
+        var dbPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "database", "DrMusa.db"));
+        
+        // Instant Google Drive Backup
+        if (!string.IsNullOrWhiteSpace(_txtAutoBackupDir.Text) && Directory.Exists(_txtAutoBackupDir.Text))
+        {
+            try
+            {
+                string targetPath = Path.Combine(_txtAutoBackupDir.Text, $"DrMusa_ManualBackup_{DateTime.Now:yyyyMMdd_HHmmss}.db");
+                File.Copy(dbPath, targetPath, overwrite: true);
+                UIHelper.ShowSuccess($"Instant Backup Complete!\nSaved directly to your Automatic Backup Directory:\n{targetPath}");
+                RefreshLastBackupTime();
+                return;
+            }
+            catch (Exception ex)
+            {
+                UIHelper.ShowError($"Failed to perform instant backup: {ex.Message}\nFalling back to manual save.");
+            }
+        }
+
+        // Fallback Manual Backup
         using var dlg = new SaveFileDialog
         {
             Filter = "SQLite Database|*.db",
@@ -324,7 +491,6 @@ public partial class SettingsForm : Form
         {
             try
             {
-                var dbPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "database", "DrMusa.db"));
                 File.Copy(dbPath, dlg.FileName, overwrite: true);
                 UIHelper.ShowSuccess("Database successfully backed up to:\n" + dlg.FileName);
             }

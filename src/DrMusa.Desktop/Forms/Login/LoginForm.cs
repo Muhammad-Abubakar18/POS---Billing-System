@@ -343,6 +343,20 @@ public sealed class LoginForm : Form
         };
         StyleCheckbox(_chkRemember);
 
+        // Forgot Password Link
+        var lnkForgot = new LinkLabel
+        {
+            Text = "Forgot Password?",
+            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
+            LinkColor = AppTheme.AccentPrimary,
+            ActiveLinkColor = AppTheme.AccentHover,
+            BackColor = Color.Transparent,
+            AutoSize = true,
+            Location = new Point(230, 286),
+            Cursor = Cursors.Hand
+        };
+        lnkForgot.LinkClicked += async (s, e) => await HandleForgotPasswordAsync();
+
         // Login button
         _btnLogin = new Button
         {
@@ -371,8 +385,11 @@ public sealed class LoginForm : Form
             _lblWelcome, _lblSubtitle,
             _lblUsername, _pnlUsername,
             _lblPassword, _pnlPassword,
-            _lblError, _chkRemember,
-            _btnLogin, _lblCopyright
+            _lblError,
+            _chkRemember,
+            lnkForgot,
+            _btnLogin,
+            _lblCopyright
         });
 
         _rightPanel.Controls.Add(_formCard);
@@ -428,7 +445,32 @@ public sealed class LoginForm : Form
             _txtUsername.ForeColor = AppTheme.TextPrimary;
             _chkRemember.Checked = true;
             _txtPassword.Focus();
+            _txtPassword.Focus();
         }
+    }
+
+    private async Task HandleForgotPasswordAsync()
+    {
+        var username = _txtUsername.Text.Trim();
+        if (string.IsNullOrWhiteSpace(username) || username == "Enter your username")
+        {
+            ShowError("Please enter your username first to recover password.");
+            _txtUsername.Focus();
+            return;
+        }
+
+        var userService = _serviceProvider.GetRequiredService<DrMusa.Business.Interfaces.IUserService>();
+        var users = await userService.GetAllAsync();
+        var user = users.FirstOrDefault(u => string.Equals(u.Username, username, StringComparison.OrdinalIgnoreCase));
+        
+        if (user == null)
+        {
+            ShowError("Username not found.");
+            return;
+        }
+
+        using var recoveryForm = new PasswordRecoveryForm(_serviceProvider, user.Id, user.Username);
+        recoveryForm.ShowDialog(this);
     }
 
     // ── Login Logic ───────────────────────────────────────────────────────────
