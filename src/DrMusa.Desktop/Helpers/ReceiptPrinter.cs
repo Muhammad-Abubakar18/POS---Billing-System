@@ -93,22 +93,32 @@ public class ReceiptPrinter
         float x = e.MarginBounds.Left;
         float width = e.MarginBounds.Width;
 
+        if (width > 400)
+        {
+            width = 314;
+            x = e.MarginBounds.Left + (e.MarginBounds.Width - width) / 2;
+        }
+
         DrawReceipt(g, x, y, width);
         e.HasMorePages = false;
     }
 
-    private void DrawReceipt(Graphics g, float x, float y, float width)
+    private void DrawReceipt(Graphics g, float x, float startY, float width)
     {
-
-        using var fontTitle = new Font("Courier New", 14, FontStyle.Bold);
+        using var fontTitle = new Font("Courier New", 16, FontStyle.Bold);
         using var fontHeader = new Font("Courier New", 10, FontStyle.Regular);
-        using var fontBody = new Font("Courier New", 9, FontStyle.Regular);
-        using var fontBold = new Font("Courier New", 9, FontStyle.Bold);
+        using var fontBody = new Font("Courier New", 10, FontStyle.Regular);
+        using var fontBold = new Font("Courier New", 10, FontStyle.Bold);
+        using var fontTotal = new Font("Courier New", 14, FontStyle.Bold);
         using var brush = new SolidBrush(Color.Black);
         using var pen = new Pen(Color.Black, 1);
+        using var thickPen = new Pen(Color.Black, 1.5f);
 
-        var centerFormat = new StringFormat { Alignment = StringAlignment.Center };
-        var rightFormat = new StringFormat { Alignment = StringAlignment.Far };
+        var formatLeft = new StringFormat { Alignment = StringAlignment.Near };
+        var formatCenter = new StringFormat { Alignment = StringAlignment.Center };
+        var formatRight = new StringFormat { Alignment = StringAlignment.Far };
+
+        float y = startY;
 
         // 1. Header Logo
         if (!string.IsNullOrEmpty(_logoBase64))
@@ -128,64 +138,101 @@ public class ReceiptPrinter
             catch { /* Ignore invalid logo */ }
         }
 
+        // Helper methods for layout
+        float MeasureH(string text, Font f, float w) => g.MeasureString(text, f, new SizeF(w, 1000)).Height;
+        
+        void DrawCentered(string text, Font f)
+        {
+            float h = MeasureH(text, f, width);
+            g.DrawString(text, f, brush, new RectangleF(x, y, width, h), formatCenter);
+            y += h;
+        }
+        
+        void DrawLeftRight(string left, string right, Font f)
+        {
+            float half = width / 2f;
+            float lh = MeasureH(left, f, half);
+            float rh = MeasureH(right, f, half);
+            float maxH = Math.Max(lh, rh);
+            g.DrawString(left, f, brush, new RectangleF(x, y, half, maxH), formatLeft);
+            g.DrawString(right, f, brush, new RectangleF(x + half, y, half, maxH), formatRight);
+            y += maxH;
+        }
+
         // 2. Header Text
-        g.DrawString(_businessName, fontTitle, brush, new RectangleF(x, y, width, 25), centerFormat);
-        y += 25;
+        DrawCentered(_businessName, fontTitle);
+        y += 5;
         if (!string.IsNullOrEmpty(_businessAddress))
         {
-            g.DrawString(_businessAddress, fontHeader, brush, new RectangleF(x, y, width, 20), centerFormat);
-            y += 20;
+            DrawCentered(_businessAddress, fontHeader);
         }
         if (!string.IsNullOrEmpty(_businessPhone))
         {
-            g.DrawString("Phone: " + _businessPhone, fontHeader, brush, new RectangleF(x, y, width, 20), centerFormat);
-            y += 20;
+            DrawCentered("Phone: " + _businessPhone, fontHeader);
         }
 
         y += 10;
+        pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
         g.DrawLine(pen, x, y, x + width, y);
         y += 5;
 
         // 3. Custom Header
         if (!string.IsNullOrEmpty(_receiptHeader))
         {
-            g.DrawString(_receiptHeader, fontBody, brush, new RectangleF(x, y, width, 40), centerFormat);
-            y += 40;
+            DrawCentered(_receiptHeader, fontBody);
+            y += 5;
             g.DrawLine(pen, x, y, x + width, y);
             y += 5;
         }
 
         // 4. Info
-        g.DrawString($"Inv#: {_sale.InvoiceNumber}", fontBody, brush, x, y);
-        y += 15;
-        g.DrawString($"Date: {_sale.SaleDate:yyyy-MM-dd HH:mm}", fontBody, brush, x, y);
-        y += 15;
-        g.DrawString($"Type: {_sale.OrderType}", fontBody, brush, x, y);
-        y += 15;
+        DrawLeftRight("Inv#:", _sale.InvoiceNumber, fontBody);
+        DrawLeftRight("Date:", _sale.SaleDate.ToString("yyyy-MM-dd HH:mm"), fontBody);
+        DrawLeftRight("Type:", _sale.OrderType.ToString(), fontBody);
 
         y += 10;
         g.DrawLine(pen, x, y, x + width, y);
         y += 5;
 
         // 5. Items Headers
-        g.DrawString("Item", fontBold, brush, x, y);
-        g.DrawString("Qty", fontBold, brush, x + (width * 0.5f), y);
-        g.DrawString("Price", fontBold, brush, x + (width * 0.7f), y);
-        g.DrawString("Total", fontBold, brush, new RectangleF(x, y, width, 20), rightFormat);
-        y += 15;
+        // Proportions: Qty 15%, Item 45%, Price 20%, Total 20%
+        float qtyW = width * 0.15f;
+        float itemW = width * 0.45f;
+        float priceW = width * 0.20f;
+        float totalW = width * 0.20f;
+
+        float qtyX = x;
+        float itemX = qtyX + qtyW;
+        float priceX = itemX + itemW;
+        float totalX = priceX + priceW;
+
+        float headerH = MeasureH("Qty", fontBold, qtyW);
+        g.DrawString("Qty", fontBold, brush, new RectangleF(qtyX, y, qtyW, headerH), formatLeft);
+        g.DrawString("Item", fontBold, brush, new RectangleF(itemX, y, itemW, headerH), formatLeft);
+        g.DrawString("Price", fontBold, brush, new RectangleF(priceX, y, priceW, headerH), formatRight);
+        g.DrawString("Total", fontBold, brush, new RectangleF(totalX, y, totalW, headerH), formatRight);
+        y += headerH + 5;
         g.DrawLine(pen, x, y, x + width, y);
         y += 5;
 
         // 6. Items
         foreach (var item in _sale.Items)
         {
-            // Truncate long names
-            var name = item.ProductName.Length > 15 ? item.ProductName.Substring(0, 15) : item.ProductName;
-            g.DrawString(name, fontBody, brush, x, y);
-            g.DrawString(item.Quantity.ToString(), fontBody, brush, x + (width * 0.5f), y);
-            g.DrawString($"{_currency} {item.UnitPrice:0.00}", fontBody, brush, x + (width * 0.7f), y);
-            g.DrawString($"{_currency} {item.TotalPrice:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-            y += 15;
+            string qtyStr = item.Quantity.ToString();
+            string nameStr = item.ProductName;
+            string priceStr = item.UnitPrice.ToString("0.00"); // No currency symbol here to avoid PKRPKR
+            string totalStr = item.TotalPrice.ToString("0.00");
+
+            float itemH = MeasureH(nameStr, fontBody, itemW);
+            float singleH = MeasureH("1", fontBody, qtyW);
+            float rowH = Math.Max(itemH, singleH);
+
+            g.DrawString(qtyStr, fontBody, brush, new RectangleF(qtyX, y, qtyW, rowH), formatLeft);
+            g.DrawString(nameStr, fontBody, brush, new RectangleF(itemX, y, itemW, rowH), formatLeft);
+            g.DrawString(priceStr, fontBody, brush, new RectangleF(priceX, y, priceW, rowH), formatRight);
+            g.DrawString(totalStr, fontBody, brush, new RectangleF(totalX, y, totalW, rowH), formatRight);
+            
+            y += rowH;
         }
 
         y += 5;
@@ -193,44 +240,41 @@ public class ReceiptPrinter
         y += 5;
 
         // 7. Totals
-        g.DrawString("SubTotal:", fontBody, brush, x + (width * 0.4f), y);
-        g.DrawString($"{_currency} {_sale.SubTotal:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-        y += 15;
-
+        DrawLeftRight("SubTotal:", $"{_currency} {_sale.SubTotal:0.00}", fontBody);
+        
         if (_sale.DiscountAmount > 0)
         {
-            g.DrawString($"Discount:", fontBody, brush, x + (width * 0.4f), y);
-            g.DrawString($"-{_currency} {_sale.DiscountAmount:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-            y += 15;
+            DrawLeftRight("Discount:", $"-{_currency} {_sale.DiscountAmount:0.00}", fontBody);
         }
 
         if (_sale.TaxAmount > 0)
         {
-            g.DrawString($"Tax:", fontBody, brush, x + (width * 0.4f), y);
-            g.DrawString($"{_currency} {_sale.TaxAmount:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-            y += 15;
+            DrawLeftRight("Tax:", $"{_currency} {_sale.TaxAmount:0.00}", fontBody);
         }
 
-        g.DrawString("Total:", fontBold, brush, x + (width * 0.4f), y);
-        g.DrawString($"{_currency} {_sale.TotalAmount:0.00}", fontBold, brush, new RectangleF(x, y, width, 20), rightFormat);
-        y += 20;
+        y += 5;
+        g.DrawLine(thickPen, x, y, x + width, y);
+        g.DrawLine(thickPen, x, y + 2, x + width, y + 2);
+        y += 7;
 
-        g.DrawString("Paid:", fontBody, brush, x + (width * 0.4f), y);
-        g.DrawString($"{_currency} {_sale.PaidAmount:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-        y += 15;
+        DrawLeftRight("TOTAL:", $"{_currency} {_sale.TotalAmount:0.00}", fontTotal);
 
-        g.DrawString("Change:", fontBody, brush, x + (width * 0.4f), y);
-        g.DrawString($"{_currency} {_sale.ChangeAmount:0.00}", fontBody, brush, new RectangleF(x, y, width, 20), rightFormat);
-        y += 20;
+        y += 5;
+        g.DrawLine(thickPen, x, y, x + width, y);
+        g.DrawLine(thickPen, x, y + 2, x + width, y + 2);
+        y += 7;
 
-        // 8. Footer
+        DrawLeftRight("Paid:", $"{_currency} {_sale.PaidAmount:0.00}", fontBody);
+        DrawLeftRight("Change:", $"{_currency} {_sale.ChangeAmount:0.00}", fontBody);
+
+        y += 10;
         g.DrawLine(pen, x, y, x + width, y);
         y += 10;
         
+        // 8. Footer
         if (!string.IsNullOrEmpty(_footerText))
         {
-            g.DrawString(_footerText, fontHeader, brush, new RectangleF(x, y, width, 40), centerFormat);
-            y += 40;
+            DrawCentered(_footerText, fontHeader);
         }
 
         // Draw simple barcode lines using Invoice Number length
@@ -244,7 +288,6 @@ public class ReceiptPrinter
             bcX += 5;
         }
         y += 35;
-        g.DrawString(_sale.InvoiceNumber, fontBody, brush, new RectangleF(x, y, width, 20), centerFormat);
-        y += 20;
+        DrawCentered(_sale.InvoiceNumber, fontBody);
     }
 }

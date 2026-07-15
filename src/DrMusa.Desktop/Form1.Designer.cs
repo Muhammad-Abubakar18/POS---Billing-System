@@ -1,4 +1,4 @@
-﻿namespace DrMusa.Desktop;
+namespace DrMusa.Desktop;
 
 partial class Form1
 {
@@ -29,10 +29,31 @@ partial class Form1
     private void InitializeComponent()
     {
         this.components = new System.ComponentModel.Container();
+        this.btnTestReceipt = new System.Windows.Forms.Button();
+        this.SuspendLayout();
+        // 
+        // btnTestReceipt
+        // 
+        this.btnTestReceipt.Location = new System.Drawing.Point(50, 50);
+        this.btnTestReceipt.Name = "btnTestReceipt";
+        this.btnTestReceipt.Size = new System.Drawing.Size(150, 40);
+        this.btnTestReceipt.TabIndex = 0;
+        this.btnTestReceipt.Text = "Test Receipt Preview";
+        this.btnTestReceipt.UseVisualStyleBackColor = true;
+        this.btnTestReceipt.Click += new System.EventHandler(this.btnTestReceipt_Click);
+        // 
+        // Form1
+        // 
+        this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
+        this.Controls.Add(this.btnTestReceipt);
+        this.Name = "Form1";
+        this.Text = "POS Preview Test";
+        this.ResumeLayout(false);
     }
 
     #endregion
+
+    private System.Windows.Forms.Button btnTestReceipt;
 }
