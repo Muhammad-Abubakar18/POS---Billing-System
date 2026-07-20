@@ -562,7 +562,11 @@ public partial class BillingForm : Form
                     settings.GetValueOrDefault("Currency", "PKR") ?? "PKR",
                     settings.GetValueOrDefault("BusinessLogo", "") ?? ""
                 );
-                printer.Print(preview: true);
+                printer.Print(preview: false);
+                
+                // Print Kitchen Receipt
+                printer.IsKitchenReceipt = true;
+                printer.Print(preview: false);
             }
             else
             {

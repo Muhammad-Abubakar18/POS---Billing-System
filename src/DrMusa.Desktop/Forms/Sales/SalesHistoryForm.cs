@@ -199,7 +199,11 @@ public partial class SalesHistoryForm : Form
             var logo = await _settingService.GetValueAsync("BusinessLogo") ?? "";
 
             var printer = new ReceiptPrinter(sale, bName, bPhone, bAddress, rHeader, rFooter, currency, logo);
-            printer.Print(preview: true);
+            printer.Print(preview: false);
+            
+            // Print Kitchen Receipt
+            printer.IsKitchenReceipt = true;
+            printer.Print(preview: false);
         }
         catch (Exception ex)
         {
