@@ -26,7 +26,11 @@ public static class UIHelper
         {
             try
             {
-                var path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.ico"));
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logo", "DrMusa-logo.ico");
+                if (File.Exists(path)) return new Icon(path);
+
+                // Fallback for some local dev scenarios
+                path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.ico"));
                 if (File.Exists(path)) return new Icon(path);
             }
             catch { }

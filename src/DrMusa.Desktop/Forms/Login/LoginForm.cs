@@ -45,7 +45,12 @@ public sealed class LoginForm : Form
 
         SessionManager.LoadSavedSettings();
 
-        var logoPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.jpg"));
+        var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logo", "DrMusa-logo.jpg");
+        if (!File.Exists(logoPath))
+        {
+            // Fallback for some local dev scenarios
+            logoPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.jpg"));
+        }
         if (File.Exists(logoPath))
         {
             _logoImage = Image.FromFile(logoPath);
