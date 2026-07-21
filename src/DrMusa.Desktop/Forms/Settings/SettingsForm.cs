@@ -368,6 +368,11 @@ public partial class SettingsForm : Form
         btnResetMonth.Click += BtnResetMonth_Click;
         tabData.Controls.Add(btnResetMonth);
 
+        var btnFactoryReset = new Button { Text = "Factory Reset (Wipe All Data)", Width = 250, Height = 45, Location = new Point(480, 85) };
+        AppTheme.StyleDangerButton(btnFactoryReset);
+        btnFactoryReset.Click += BtnFactoryReset_Click;
+        tabData.Controls.Add(btnFactoryReset);
+
         tabs.TabPages.Add(tabData);
 
         // Last Backup Label
@@ -479,6 +484,47 @@ public partial class SettingsForm : Form
         catch (Exception ex)
         {
             MessageBox.Show("Error deleting sales: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnFactoryReset_Click(object? sender, EventArgs e)
+    {
+        using var authForm = new DrMusa.Desktop.Forms.Login.AdminAuthForm(_serviceProvider);
+        if (authForm.ShowDialog() != DialogResult.OK) return;
+
+        var confirm1 = MessageBox.Show(
+            "CRITICAL WARNING: This will permanently delete ALL data (Products, Sales, Categories, Users) and reset the system to its initial state.\n\nAre you absolutely sure you want to proceed?",
+            "Factory Reset - Step 1", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+        
+        if (confirm1 != DialogResult.Yes) return;
+
+        var confirm2 = MessageBox.Show(
+            "FINAL WARNING: This action CANNOT be undone. You will lose all your configurations, inventory, and sales history. The app will restart after reset.\n\nProceed with Factory Reset?",
+            "Factory Reset - Final", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+
+        if (confirm2 != DialogResult.Yes) return;
+
+        try
+        {
+            var dbContext = _serviceProvider.GetRequiredService<DrMusa.Data.Context.DrMusaDbContext>();
+            
+            // Clear active EF connections to release file lock
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+            
+            // Wipe database
+            await dbContext.Database.EnsureDeletedAsync();
+            
+            // Reseed default data (this also runs migrations)
+            await DrMusa.Data.Seed.DbSeeder.SeedAsync(dbContext);
+
+            MessageBox.Show("Factory Reset complete. The system will now restart.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+            Application.Restart();
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error performing factory reset: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
