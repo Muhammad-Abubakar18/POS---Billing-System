@@ -68,7 +68,7 @@ public sealed class LoginForm : Form
         FormBorderStyle = FormBorderStyle.Sizable;
         MaximizeBox = true;
         BackColor = AppTheme.BackgroundDark;
-        Icon = SystemIcons.Shield;
+        Icon = UIHelper.AppIcon ?? SystemIcons.Shield;
 
         BuildLeftPanel();
         BuildRightPanel();

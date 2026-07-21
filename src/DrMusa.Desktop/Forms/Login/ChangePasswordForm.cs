@@ -41,6 +41,7 @@ public sealed class ChangePasswordForm : Form
         MaximizeBox     = false;
         MinimizeBox     = false;
         BackColor       = AppTheme.BackgroundDark;
+        if (UIHelper.AppIcon != null) Icon = UIHelper.AppIcon;
         KeyPreview      = true;
 
         Paint += (s, e) =>

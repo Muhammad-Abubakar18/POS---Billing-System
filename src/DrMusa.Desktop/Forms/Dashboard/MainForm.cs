@@ -54,6 +54,7 @@ public partial class MainForm : Form
         ForeColor       = AppTheme.TextPrimary;
         Font            = AppTheme.FontBody;
         WindowState     = FormWindowState.Maximized;
+        if (UIHelper.AppIcon != null) Icon = UIHelper.AppIcon;
 
         BuildTopBar();
         BuildSideBar();
@@ -115,8 +116,16 @@ public partial class MainForm : Form
 
         var btnLogout = CreateTopBarButton("⏻  Sign Out", AppTheme.BackgroundCard);
         btnLogout.ForeColor = AppTheme.AccentDanger;
-        btnLogout.MouseEnter += (s, e) => btnLogout.BackColor = AppTheme.ColorFromHex("#3D1010");
-        btnLogout.MouseLeave += (s, e) => btnLogout.BackColor = AppTheme.BackgroundCard;
+        btnLogout.MouseEnter += (s, e) => 
+        {
+            btnLogout.BackColor = AppTheme.AccentDanger;
+            btnLogout.ForeColor = Color.White;
+        };
+        btnLogout.MouseLeave += (s, e) => 
+        {
+            btnLogout.BackColor = AppTheme.BackgroundCard;
+            btnLogout.ForeColor = AppTheme.AccentDanger;
+        };
         btnLogout.Click += BtnLogout_Click;
 
         // Layout buttons right-to-left

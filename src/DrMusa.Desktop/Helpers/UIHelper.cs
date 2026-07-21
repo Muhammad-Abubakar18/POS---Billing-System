@@ -19,4 +19,18 @@ public static class UIHelper
     /// <summary>Formats a decimal as currency using the configured symbol.</summary>
     public static string FormatCurrency(decimal value, string symbol = "PKR")
         => $"{symbol} {value:N2}";
+
+    public static Icon? AppIcon
+    {
+        get
+        {
+            try
+            {
+                var path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "assets", "logo", "DrMusa-logo.ico"));
+                if (File.Exists(path)) return new Icon(path);
+            }
+            catch { }
+            return null;
+        }
+    }
 }
