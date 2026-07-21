@@ -347,9 +347,9 @@ public sealed class LoginForm : Form
             ForeColor = AppTheme.AccentDanger,
             BackColor = Color.Transparent,
             AutoSize = false,
-            Size = new Size(320, 20),
-            Location = new Point(30, 260),
-            TextAlign = ContentAlignment.MiddleLeft
+            Size = new Size(320, 30),
+            Location = new Point(30, 255),
+            TextAlign = ContentAlignment.TopLeft
         };
 
         // Remember Me checkbox
@@ -491,6 +491,12 @@ public sealed class LoginForm : Form
         if (user == null)
         {
             ShowError("Username not found.");
+            return;
+        }
+
+        if (user.Role != DrMusa.Common.Enums.UserRole.Owner)
+        {
+            ShowError("Only admin can use this option.");
             return;
         }
 
