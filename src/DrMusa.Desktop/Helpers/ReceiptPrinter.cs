@@ -35,7 +35,7 @@ public class ReceiptPrinter
         _logoBase64 = logoBase64;
     }
 
-    public void Print(bool preview = true)
+    public void Print(bool preview = true, string? printerName = null)
     {
         if (PrinterSettings.InstalledPrinters.Count == 0)
         {
@@ -62,6 +62,11 @@ public class ReceiptPrinter
         }
 
         using var pd = new PrintDocument();
+        
+        if (!string.IsNullOrEmpty(printerName))
+        {
+            pd.PrinterSettings.PrinterName = printerName;
+        }
         
         // Typical thermal printer settings
         pd.DefaultPageSettings.PaperSize = new PaperSize("Custom", 314, 1000); 

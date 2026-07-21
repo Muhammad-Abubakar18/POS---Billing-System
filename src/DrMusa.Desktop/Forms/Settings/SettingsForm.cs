@@ -28,6 +28,11 @@ public partial class SettingsForm : Form
     private TextBox _txtAutoBackupDir = null!;
     private Label _lblLastBackup = null!;
 
+    // Printer Settings Controls
+    private ComboBox _cmbPrintMode = null!;
+    private ComboBox _cmbCashierPrinter = null!;
+    private ComboBox _cmbKitchenPrinter = null!;
+
     // Security Controls
     private ComboBox _cmbQ1 = null!;
     private TextBox _txtA1 = null!;
@@ -134,10 +139,51 @@ public partial class SettingsForm : Form
         tabReceipt.Controls.Add(layoutReceipt);
         tabs.TabPages.Add(tabReceipt);
 
-        // --- Tab: Printer Guide ---
-        var tabGuide = new TabPage("Printer Guide");
-        tabGuide.BackColor = AppTheme.BackgroundPanel;
+        // --- Tab: Printer Settings ---
+        var tabPrinter = new TabPage("Printer Settings");
+        tabPrinter.BackColor = AppTheme.BackgroundPanel;
 
+        var layoutPrinter = new TableLayoutPanel { Dock = DockStyle.Top, Padding = new Padding(20), ColumnCount = 2, RowCount = 3, AutoSize = true, Height = 150 };
+        layoutPrinter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
+        layoutPrinter.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+        _cmbPrintMode = new ComboBox { Width = 400, Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbPrintMode.Items.AddRange(new[] 
+        { 
+            "1 - Two Printers (Separate Cashier & Kitchen)",
+            "2 - Single Printer Direct (Bypass Preview)",
+            "3 - Single Printer (Show Preview)"
+        });
+        _cmbPrintMode.SelectedIndexChanged += (s, e) =>
+        {
+            bool showPrinters = _cmbPrintMode.SelectedIndex == 0 || _cmbPrintMode.SelectedIndex == 1;
+            _cmbCashierPrinter.Enabled = showPrinters;
+            _cmbKitchenPrinter.Enabled = showPrinters;
+        };
+
+        _cmbCashierPrinter = new ComboBox { Width = 400, Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        _cmbKitchenPrinter = new ComboBox { Width = 400, Font = new Font("Segoe UI", 11f), DropDownStyle = ComboBoxStyle.DropDownList };
+        
+        try 
+        {
+            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+            {
+                _cmbCashierPrinter.Items.Add(printer);
+                _cmbKitchenPrinter.Items.Add(printer);
+            }
+        }
+        catch { /* Ignore if WMI or printer spooler fails */ }
+
+        layoutPrinter.Controls.Add(new Label { Text = "Print Mode", ForeColor = AppTheme.TextPrimary, AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
+        layoutPrinter.Controls.Add(_cmbPrintMode, 1, 0);
+        
+        layoutPrinter.Controls.Add(new Label { Text = "Cashier Printer", ForeColor = AppTheme.TextPrimary, AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);
+        layoutPrinter.Controls.Add(_cmbCashierPrinter, 1, 1);
+        
+        layoutPrinter.Controls.Add(new Label { Text = "Kitchen Printer", ForeColor = AppTheme.TextPrimary, AutoSize = true, Anchor = AnchorStyles.Left }, 0, 2);
+        layoutPrinter.Controls.Add(_cmbKitchenPrinter, 1, 2);
+
+        var pnlGuide = new Panel { Dock = DockStyle.Fill, Padding = new Padding(20, 0, 20, 20) };
         var txtGuide = new TextBox
         {
             Dock = DockStyle.Fill,
@@ -161,8 +207,11 @@ public partial class SettingsForm : Form
    - Click the small 'Print' icon in the upper-left of the preview window to send it to the printer.
    - If the receipt cuts off early or is too narrow, adjust your Paper Size in the Windows Printer Properties."
         };
-        tabGuide.Controls.Add(txtGuide);
-        tabs.TabPages.Add(tabGuide);
+        pnlGuide.Controls.Add(txtGuide);
+        
+        tabPrinter.Controls.Add(pnlGuide);
+        tabPrinter.Controls.Add(layoutPrinter);
+        tabs.TabPages.Add(tabPrinter);
 
         // --- Tab: Database & Security ---
         var tabDb = new TabPage("Database & Security");
@@ -352,6 +401,23 @@ public partial class SettingsForm : Form
         _txtReceiptFooter.Text = settings.GetValueOrDefault("ReceiptFooter", "Please come again");
         _txtAutoBackupDir.Text = settings.GetValueOrDefault("AutoBackupDirectory", "");
 
+        if (int.TryParse(settings.GetValueOrDefault("PrintMode", "3"), out int modeIndex) && modeIndex >= 1 && modeIndex <= 3)
+        {
+            _cmbPrintMode.SelectedIndex = modeIndex - 1; // 1-based to 0-based
+        }
+        else
+        {
+            _cmbPrintMode.SelectedIndex = 2; // Default to Mode 3
+        }
+        
+        var cPrinter = settings.GetValueOrDefault("CashierPrinter", "");
+        if (!string.IsNullOrEmpty(cPrinter) && _cmbCashierPrinter.Items.Contains(cPrinter))
+            _cmbCashierPrinter.SelectedItem = cPrinter;
+            
+        var kPrinter = settings.GetValueOrDefault("KitchenPrinter", "");
+        if (!string.IsNullOrEmpty(kPrinter) && _cmbKitchenPrinter.Items.Contains(kPrinter))
+            _cmbKitchenPrinter.SelectedItem = kPrinter;
+
         if (settings.TryGetValue("AdminRecoveryQ1", out string? q1) && !string.IsNullOrEmpty(q1)) _cmbQ1.SelectedItem = q1;
         if (settings.TryGetValue("AdminRecoveryQ2", out string? q2) && !string.IsNullOrEmpty(q2)) _cmbQ2.SelectedItem = q2;
         if (settings.TryGetValue("AdminRecoveryQ3", out string? q3) && !string.IsNullOrEmpty(q3)) _cmbQ3.SelectedItem = q3;
@@ -506,6 +572,13 @@ public partial class SettingsForm : Form
             await _settingService.SetValueAsync("ReceiptFooter", _txtReceiptFooter.Text.Trim());
             await _settingService.SetValueAsync("BusinessLogo", _currentLogoBase64 ?? "");
             await _settingService.SetValueAsync("AutoBackupDirectory", _txtAutoBackupDir.Text.Trim());
+
+            // Printer Settings
+            await _settingService.SetValueAsync("PrintMode", (_cmbPrintMode.SelectedIndex + 1).ToString());
+            if (_cmbCashierPrinter.SelectedItem != null)
+                await _settingService.SetValueAsync("CashierPrinter", _cmbCashierPrinter.SelectedItem.ToString()!);
+            if (_cmbKitchenPrinter.SelectedItem != null)
+                await _settingService.SetValueAsync("KitchenPrinter", _cmbKitchenPrinter.SelectedItem.ToString()!);
 
             // Save Security Questions
             if (_cmbQ1.SelectedItem != null) await _settingService.SetValueAsync("AdminRecoveryQ1", _cmbQ1.SelectedItem.ToString()!);

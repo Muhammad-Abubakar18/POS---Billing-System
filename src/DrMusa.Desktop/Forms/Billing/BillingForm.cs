@@ -562,11 +562,40 @@ public partial class BillingForm : Form
                     settings.GetValueOrDefault("Currency", "PKR") ?? "PKR",
                     settings.GetValueOrDefault("BusinessLogo", "") ?? ""
                 );
-                printer.Print(preview: false);
-                
-                // Print Kitchen Receipt
-                printer.IsKitchenReceipt = true;
-                printer.Print(preview: false);
+                int printMode = 3;
+                if (int.TryParse(settings.GetValueOrDefault("PrintMode", "3"), out int m) && m >= 1 && m <= 3)
+                    printMode = m;
+                    
+                string? cashierPrinter = settings.GetValueOrDefault("CashierPrinter", null);
+                string? kitchenPrinter = settings.GetValueOrDefault("KitchenPrinter", null);
+
+                if (printMode == 1)
+                {
+                    // Two Printers
+                    printer.IsKitchenReceipt = false;
+                    printer.Print(preview: false, printerName: cashierPrinter);
+
+                    printer.IsKitchenReceipt = true;
+                    printer.Print(preview: false, printerName: kitchenPrinter);
+                }
+                else if (printMode == 2)
+                {
+                    // Single Printer Direct
+                    printer.IsKitchenReceipt = false;
+                    printer.Print(preview: false, printerName: cashierPrinter);
+
+                    printer.IsKitchenReceipt = true;
+                    printer.Print(preview: false, printerName: cashierPrinter);
+                }
+                else
+                {
+                    // Single Printer Preview
+                    printer.IsKitchenReceipt = false;
+                    printer.Print(preview: true, printerName: null);
+
+                    printer.IsKitchenReceipt = true;
+                    printer.Print(preview: true, printerName: null);
+                }
             }
             else
             {
